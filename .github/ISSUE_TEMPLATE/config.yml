@@ -1,5 +1,1 @@
-blank_issues_enabled: false
-contact_links:
-  - name: Questions and support
-    url: https://t.me/boringdystopiadevelopment
-    about: Use Telegram for setup questions, troubleshooting help, and general support.
+blank_issues_enabled: true

@@ -375,7 +375,7 @@ export function createAgents(
     const override = getAgentOverride(config, name);
     if (!hasCustomAgentModel(override)) {
       console.warn(
-        `[oh-my-opencode] Custom agent '${name}' skipped: 'model' is required`,
+        `[tailored-omo] Custom agent '${name}' skipped: 'model' is required`,
       );
       return [];
     }

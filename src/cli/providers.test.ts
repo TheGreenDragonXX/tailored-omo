@@ -23,7 +23,7 @@ describe('providers', () => {
     });
 
     expect(config.$schema).toBe(
-      'https://unpkg.com/tailored-omo@latest/tailored-omo.schema.json',
+      'https://raw.githubusercontent.com/TheGreenDragonXX/tailored-omo/tailored-main/tailored-omo.schema.json',
     );
     expect(config.preset).toBe('openai');
     expect(config.disabled_agents).toBeUndefined();

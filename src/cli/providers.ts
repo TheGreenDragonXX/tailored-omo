@@ -3,7 +3,7 @@ import { CUSTOM_SKILLS } from './custom-skills';
 import type { InstallConfig } from './types';
 
 const SCHEMA_URL =
-  'https://unpkg.com/tailored-omo@latest/tailored-omo.schema.json';
+  'https://raw.githubusercontent.com/TheGreenDragonXX/tailored-omo/tailored-main/tailored-omo.schema.json';
 
 export const GENERATED_PRESETS = ['openai', 'opencode-go'] as const;
 

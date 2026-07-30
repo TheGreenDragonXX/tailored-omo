@@ -729,7 +729,10 @@ fn render_size_picker(ctx: &egui::Context, win_w: f32, win_h: f32) {
             .show(ctx, |ui| {
                 egui::Frame::none()
                     .fill(egui::Color32::from_rgb(20, 20, 22))
-                    .stroke(egui::Stroke::new(1.0, egui::Color32::from_white_alpha(35)))
+                    .stroke(egui::Stroke::new(
+                        1.0_f32,
+                        egui::Color32::from_white_alpha(35),
+                    ))
                     .inner_margin(egui::Margin::symmetric(4.0, 4.0))
                     .show(ui, |ui| {
                         ui.set_min_width(MENU_W - MENU_PAD * 2.0);

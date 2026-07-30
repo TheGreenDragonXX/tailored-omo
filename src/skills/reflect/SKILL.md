@@ -20,7 +20,7 @@ Use Reflect when the user asks to:
 - run `/reflect --sessions` for session archaeology;
 - learn from recent sessions or repeated workflows;
 - find work they keep doing manually;
-- improve their tailored-omo setup based on actual usage using tailored-omo skill;
+- improve their Tailored OMO setup based on actual usage;
 - review whether a recurring process should become a reusable playbook;
 - turn repeated workflow friction into a safer future default.
 
@@ -37,7 +37,8 @@ repeated patterns, friction, and improvement opportunities.
 
 1. **Load recent sessions** - Query the SQLite database directly:
    ```bash
-   bun -e "import Database from 'bun:sqlite'; const db = new Database('/home/mhenke/.local/share/opencode/opencode.db'); console.log(db.query('SELECT id, directory, title, agent, model, time_created, cost, tokens_input, tokens_output FROM session ORDER BY time_created DESC LIMIT 50').all())"
+   OPENCODE_DB="${XDG_DATA_HOME:-$HOME/.local/share}/opencode/opencode.db" \
+     bun -e "import Database from 'bun:sqlite'; const db = new Database(process.env.OPENCODE_DB); console.log(db.query('SELECT id, directory, title, agent, model, time_created, cost, tokens_input, tokens_output FROM session ORDER BY time_created DESC LIMIT 50').all())"
    ```
    Adjust `LIMIT 50` to `--last N` if specified.
 
@@ -45,7 +46,9 @@ repeated patterns, friction, and improvement opportunities.
 
 2. **Load session messages** - For each session ID, query the message table:
    ```bash
-   bun -e "import Database from 'bun:sqlite'; const db = new Database('/home/mhenke/.local/share/opencode/opencode.db'); console.log(db.query('SELECT data FROM message WHERE session_id = ?').all('ses_14de9c68effegtZtlATm42wnz7'))"
+   SESSION_ID="ses_example" \
+     OPENCODE_DB="${XDG_DATA_HOME:-$HOME/.local/share}/opencode/opencode.db" \
+     bun -e "import Database from 'bun:sqlite'; const db = new Database(process.env.OPENCODE_DB); console.log(db.query('SELECT data FROM message WHERE session_id = ?').all(process.env.SESSION_ID))"
    ```
 
    **Message table columns:** `id, session_id, time_created, time_updated, data` (data is JSON with role, agent, model, summary, etc.)
@@ -56,8 +59,8 @@ For each session, analyze and produce a structured summary:
 
 ```json
 {
-  "session": "ses_14de9c68effegtZtlATm42wnz7",
-  "project": "/home/user/Projects/tailored-omo",
+  "session": "ses_example",
+  "project": "/path/to/project",
   "timestamp": "2026-06-10T15:08:45.427Z",
   "goal": "Fix CI failure",
   "success": true,

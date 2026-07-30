@@ -1,21 +1,10 @@
-# Security Policy
+# Security policy
 
-## Supported Versions
+Only the current `tailored-main` branch is maintained. Older snapshots do not
+receive separate security updates.
 
-We actively support and patch security issues in the following versions of `tailored-omo`:
+Do not open a public issue for a vulnerability. Use
+[GitHub private vulnerability reporting](https://github.com/TheGreenDragonXX/tailored-omo/security/advisories/new).
 
-| Version | Supported |
-| ------- | --------- |
-| 2.2.x   | ✅ Yes    |
-| < 2.2   | ❌ No     |
-
-## Reporting a Vulnerability
-
-If you discover a security vulnerability in this project, please do not open a public issue. Instead, use GitHub's private vulnerability reporting at https://github.com/TheGreenDragonXX/tailored-omo/security/advisories/new, or reach out to @TheGreenDragonXX directly.
-
-Please include:
-1. Detailed description of the vulnerability.
-2. Steps to reproduce or proof-of-concept code.
-3. Impact assessment.
-
-We will acknowledge receipt of your report within 48 hours and provide a timeline for coordination and patching.
+Include a description, reproduction steps or proof of concept, and the likely
+impact. Never include live credentials.

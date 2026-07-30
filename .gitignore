@@ -40,11 +40,8 @@ local
 .loop-history-*.md
 .opencode/loop-history/
 
-.sisyphus/
-.hive/
 .opencode/
 .claude/
-.ignore
 opencode
 oh-my-opencode
 opencode.jsonc
@@ -71,7 +68,6 @@ __pycache__/
 env/
 build/
 develop-eggs/
-dist/
 downloads/
 eggs/
 .eggs/
@@ -88,18 +84,5 @@ captures/
 
 # Rust companion build artifacts
 companion/target/
-
-# BEGIN tailored-omo clonedeps
-.slim/clonedeps/repos/
-# END tailored-omo clonedeps
-
-# BEGIN tailored-omo worktrees
-.slim/worktrees/
-.slim/worktrees.json
-# END tailored-omo worktrees
-
-# Deepwork session artifacts
-.slim/deepwork/
-.codegraph/
 companion/VIDEOS/
 .worktrees/

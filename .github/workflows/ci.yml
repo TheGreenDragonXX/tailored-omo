@@ -2,17 +2,15 @@ name: CI
 
 on:
   push:
-    branches: [main, master]
+    branches: [tailored-main]
     paths-ignore:
       - '**/*.md'
       - 'docs/**'
-      - '.all-contributorsrc'
   pull_request:
-    branches: [main, master]
+    branches: [tailored-main]
     paths-ignore:
       - '**/*.md'
       - 'docs/**'
-      - '.all-contributorsrc'
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}

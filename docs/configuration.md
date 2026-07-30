@@ -26,8 +26,8 @@ Important non-model settings:
 - `backgroundJobs.continueOnIdle: true` enables the upstream continuation path.
 - `fallback.enabled: true`, `retry_on_empty: true`, `maxRetries: 2`, and
   `timeoutMs: 180000` bound retries before moving through each model chain.
-- `companion.enabled: true` and `multiplexer.type: "auto"` provide visible
-  status/control without LLM calls.
+- `companion.enabled: false` keeps the optional animation off; change it to
+  `true` only when wanted. `multiplexer.type: "auto"` retains terminal panes.
 
 Librarian alone receives `websearch`, `context7`, and `gh_grep`. This allows it
 to combine current web results, version-specific library documentation, and

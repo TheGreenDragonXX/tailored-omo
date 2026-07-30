@@ -476,7 +476,7 @@ describe('config-io', () => {
 
     const saved = JSON.parse(readFileSync(litePath, 'utf-8'));
     expect(saved.$schema).toBe(
-      'https://unpkg.com/tailored-omo@latest/tailored-omo.schema.json',
+      'https://raw.githubusercontent.com/TheGreenDragonXX/tailored-omo/tailored-main/tailored-omo.schema.json',
     );
     expect(saved.preset).toBe('openai');
     expect(saved.presets.openai).toBeDefined();
