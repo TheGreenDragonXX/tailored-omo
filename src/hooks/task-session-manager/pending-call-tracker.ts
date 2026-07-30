@@ -51,7 +51,7 @@ export function createPendingCallTracker() {
      * Peek a pending call for a parent, preferring one whose agentType
      * matches `agentHint`. Used by session.created early registration:
      * when a parent launches several parallel task tools with different
-     * subagent types (e.g. council reviewers), `info.agent` on the
+     * subagent types (e.g. parallel reviewers), `info.agent` on the
      * child session identifies which subagent started it, so we can
      * avoid attributing the child to the wrong pending call.
      * Falls back to the oldest pending call for the parent when no

@@ -47,14 +47,12 @@ const SYMBOLS = {
   star: `${YELLOW}★${RESET}`,
 };
 
-const GITHUB_REPO = 'alvinunreal/oh-my-opencode-slim';
+const GITHUB_REPO = 'TheGreenDragonXX/tailored-omo';
 const GITHUB_URL = `https://github.com/${GITHUB_REPO}`;
 
 function printHeader(isUpdate: boolean): void {
   console.log();
-  console.log(
-    `${BOLD}oh-my-opencode-slim ${isUpdate ? 'Update' : 'Install'}${RESET}`,
-  );
+  console.log(`${BOLD}tailored-omo ${isUpdate ? 'Update' : 'Install'}${RESET}`);
   console.log('='.repeat(30));
   console.log();
 }
@@ -338,7 +336,7 @@ async function runInstall(config: InstallConfig): Promise<number> {
     const { ok } = await checkOpenCodeInstalled();
     if (!ok) return 1;
   }
-  printStep(step++, totalSteps, 'Adding oh-my-opencode-slim plugin...');
+  printStep(step++, totalSteps, 'Adding tailored-omo plugin...');
   if (config.dryRun) {
     printInfo('Dry run mode - skipping plugin installation');
   } else {
@@ -398,7 +396,7 @@ async function runInstall(config: InstallConfig): Promise<number> {
     if (!companionResult.success) config.companion = 'no';
   }
 
-  printStep(step++, totalSteps, 'Writing oh-my-opencode-slim configuration...');
+  printStep(step++, totalSteps, 'Writing tailored-omo configuration...');
   if (config.dryRun) {
     const liteConfig = generateLiteConfig(config);
     printInfo('Dry run mode - configuration that would be written:');
@@ -553,8 +551,8 @@ async function runInstall(config: InstallConfig): Promise<number> {
   const altProviders = 'For the full configuration reference, see:';
   console.log(altProviders);
   const docsUrl =
-    'https://github.com/alvinunreal/oh-my-opencode-slim/' +
-    'blob/master/docs/configuration.md';
+    'https://github.com/TheGreenDragonXX/tailored-omo/' +
+    'blob/tailored-main/docs/configuration.md';
   console.log(`  ${BLUE}${docsUrl}${RESET}`);
   console.log();
 

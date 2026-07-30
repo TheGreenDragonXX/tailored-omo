@@ -40,7 +40,7 @@ export interface LoadPluginConfigOptions {
   silent?: boolean;
 }
 
-const PROMPTS_DIR_NAME = 'oh-my-opencode-slim';
+const PROMPTS_DIR_NAME = 'tailored-omo';
 
 /**
  * Load and validate plugin configuration from a specific file path.
@@ -76,10 +76,7 @@ function loadConfigFromPath(
         message,
       });
       if (!options?.silent) {
-        console.warn(
-          `[oh-my-opencode-slim] Invalid JSON in ${configPath}:`,
-          message,
-        );
+        console.warn(`[tailored-omo] Invalid JSON in ${configPath}:`, message);
       }
       return null;
     }
@@ -97,31 +94,7 @@ function loadConfigFromPath(
         message: tmuxMsg,
       });
       if (!options?.silent) {
-        console.warn(`[oh-my-opencode-slim] ${tmuxMsg}`);
-      }
-    }
-
-    // Warn about deprecated council.master key
-    if (
-      typeof rawConfig === 'object' &&
-      rawConfig !== null &&
-      typeof (rawConfig as Record<string, unknown>).council === 'object' &&
-      (rawConfig as Record<string, unknown>).council !== null &&
-      'master' in
-        ((rawConfig as Record<string, unknown>).council as Record<
-          string,
-          unknown
-        >)
-    ) {
-      const masterMsg =
-        'Deprecated council.master config key found and ignored. Configure council agents via presets instead.';
-      options?.onWarning?.({
-        path: configPath,
-        kind: 'invalid-schema' as ConfigLoadWarningKind,
-        message: masterMsg,
-      });
-      if (!options?.silent) {
-        console.warn(`[oh-my-opencode-slim] ${masterMsg}`);
+        console.warn(`[tailored-omo] ${tmuxMsg}`);
       }
     }
 
@@ -135,7 +108,7 @@ function loadConfigFromPath(
         formatted: result.error.format(),
       });
       if (!options?.silent) {
-        console.warn(`[oh-my-opencode-slim] Invalid config at ${configPath}:`);
+        console.warn(`[tailored-omo] Invalid config at ${configPath}:`);
         console.warn(result.error.format());
       }
       return null;
@@ -156,7 +129,7 @@ function loadConfigFromPath(
       });
       if (!options?.silent) {
         console.warn(
-          `[oh-my-opencode-slim] Error reading config from ${configPath}:`,
+          `[tailored-omo] Error reading config from ${configPath}:`,
           error.message,
         );
       }
@@ -169,7 +142,7 @@ function loadConfigFromPath(
  * Find existing config file path, preferring .jsonc over .json.
  * Checks for .jsonc first, then falls back to .json.
  *
- * @param basePath - Base path without extension (e.g., /path/to/oh-my-opencode-slim)
+ * @param basePath - Base path without extension (e.g., /path/to/tailored-omo)
  * @returns Path to existing config file, or null if neither exists
  */
 function findConfigPath(basePath: string): string | null {
@@ -219,7 +192,7 @@ function validateFinalImageRouting(
     message,
   });
   if (!options?.silent) {
-    console.warn(`[oh-my-opencode-slim] Invalid config: ${message}`);
+    console.warn(`[tailored-omo] Invalid config: ${message}`);
   }
   return false;
 }
@@ -227,7 +200,7 @@ function validateFinalImageRouting(
 /**
  * Find plugin config paths (user and project) for a given directory.
  * User config uses getConfigSearchDirs() for lookup.
- * Project config uses <directory>/.opencode/oh-my-opencode-slim.
+ * Project config uses <directory>/.opencode/tailored-omo.
  *
  * @param directory - Project directory to search for .opencode config
  * @returns Object with userConfigPath and projectConfigPath (null if not found)
@@ -238,13 +211,13 @@ export function findPluginConfigPaths(directory: string): {
 } {
   const userConfigPath = findConfigPathInDirs(
     getConfigSearchDirs(),
-    'oh-my-opencode-slim',
+    'tailored-omo',
   );
 
   const projectConfigBasePath = path.join(
     directory,
     '.opencode',
-    'oh-my-opencode-slim',
+    'tailored-omo',
   );
 
   const projectConfigPath = findConfigPath(projectConfigBasePath);
@@ -266,11 +239,8 @@ export function mergePluginConfigs(
     agents: deepMerge(base.agents, override.agents),
     presets: deepMerge(base.presets, override.presets),
     multiplexer: deepMerge(base.multiplexer, override.multiplexer),
-    interview: deepMerge(base.interview, override.interview),
     backgroundJobs: deepMerge(base.backgroundJobs, override.backgroundJobs),
     fallback: deepMerge(base.fallback, override.fallback),
-    council: deepMerge(base.council, override.council),
-    acpAgents: deepMerge(base.acpAgents, override.acpAgents),
     companion: deepMerge(
       base.companion as Record<string, unknown> | undefined,
       override.companion as Record<string, unknown> | undefined,
@@ -321,9 +291,9 @@ export function deepMerge<T extends Record<string, unknown>>(
  * Load plugin configuration from user and project config files, merging them appropriately.
  *
  * Configuration is loaded from two locations:
- * 1. User config: $OPENCODE_CONFIG_DIR/oh-my-opencode-slim.jsonc or .json,
- *    or ~/.config/opencode/oh-my-opencode-slim.jsonc or .json (or $XDG_CONFIG_HOME)
- * 2. Project config: <directory>/.opencode/oh-my-opencode-slim.jsonc or .json
+ * 1. User config: $OPENCODE_CONFIG_DIR/tailored-omo.jsonc or .json,
+ *    or ~/.config/opencode/tailored-omo.jsonc or .json (or $XDG_CONFIG_HOME)
+ * 2. Project config: <directory>/.opencode/tailored-omo.jsonc or .json
  *
  * JSONC format is preferred over JSON (allows comments and trailing commas).
  * Project config takes precedence over user config. Nested objects (agents, multiplexer) are
@@ -352,7 +322,7 @@ export function loadPluginConfig(
   }
 
   // Override preset from environment variable if set
-  const envPreset = process.env.OH_MY_OPENCODE_SLIM_PRESET;
+  const envPreset = process.env.TAILORED_OMO_PRESET;
   if (envPreset) {
     config.preset = envPreset;
   }
@@ -377,7 +347,7 @@ export function loadPluginConfig(
         message,
       });
       if (!options?.silent) {
-        console.warn(`[oh-my-opencode-slim] ${message}`);
+        console.warn(`[tailored-omo] ${message}`);
       }
     }
   }
@@ -473,7 +443,7 @@ export function loadAgentPrompt(
         return fs.readFileSync(promptPath, 'utf-8');
       } catch (error) {
         console.warn(
-          `[oh-my-opencode-slim] ${errorPrefix} ${promptPath}:`,
+          `[tailored-omo] ${errorPrefix} ${promptPath}:`,
           error instanceof Error ? error.message : String(error),
         );
       }

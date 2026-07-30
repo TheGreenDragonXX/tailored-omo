@@ -1,12 +1,10 @@
 import type { AgentConfig as SDKAgentConfig } from '@opencode-ai/sdk/v2';
 import { getSkillPermissionsForAgent } from '../cli/skills';
 import {
-  AGENT_ALIASES,
   type AgentOverrideConfig,
   ALL_AGENT_NAMES,
   DEFAULT_DISABLED_AGENTS,
   DEFAULT_MODELS,
-  getAcpAgentNames,
   getAgentOverride,
   getCustomAgentNames,
   loadAgentPrompt,
@@ -16,10 +14,6 @@ import {
 } from '../config';
 import { getAgentMcpList } from '../config/agent-mcps';
 
-import { createCouncilAgent } from './council';
-import { buildCouncillorAgents, getCouncillorSeatName } from './council-agents';
-import { createCouncillorAgent } from './councillor';
-import { createDesignerAgent } from './designer';
 import { createExplorerAgent } from './explorer';
 import { createFixerAgent } from './fixer';
 import { createLibrarianAgent } from './librarian';
@@ -93,49 +87,6 @@ function getConfigPrimaryModel(
   config: PluginConfig | undefined,
 ): string | undefined {
   return getActivePresetPrimaryModel(config);
-}
-
-function buildAcpAgentDefinition(
-  name: string,
-  config: NonNullable<PluginConfig['acpAgents']>[string],
-  fallbackModel?: string,
-): AgentDefinition {
-  const description =
-    config.description ?? `External ACP agent '${name}' via ${config.command}`;
-  const prompt =
-    config.prompt ??
-    [
-      `You are the ${name} ACP wrapper agent.`,
-      '',
-      'Your only job is to send the user task to the configured external ACP agent using the acp_run tool, then return the ACP agent result.',
-      `Always call acp_run with agent: ${JSON.stringify(
-        name,
-      )} and pass the full user task as prompt.`,
-      'Do not edit files yourself unless the ACP result explicitly asks you to report a local follow-up to the orchestrator.',
-    ].join('\n');
-
-  return {
-    name,
-    description,
-    config: {
-      model: config.wrapperModel ?? fallbackModel ?? DEFAULT_MODELS.oracle,
-      temperature: 0,
-      prompt,
-      permission: {
-        read: 'deny',
-        edit: 'deny',
-        bash: 'deny',
-        task: 'deny',
-        glob: 'deny',
-        grep: 'deny',
-        list: 'deny',
-        webfetch: 'deny',
-        question: 'deny',
-        skill: 'deny',
-        acp_run: 'allow',
-      },
-    },
-  } as AgentDefinition;
 }
 
 function isSafeDisplayName(displayName: string): boolean {
@@ -272,7 +223,7 @@ function injectDisplayNames(
  * If configuredSkills is provided, it honors that list instead of defaults.
  *
  * Note: If the agent already explicitly sets question to 'deny', that is
- * respected (e.g. councillor should not ask questions).
+ * respected when an agent explicitly denies questions.
  */
 function applyDefaultPermissions(
   agent: AgentDefinition,
@@ -298,7 +249,7 @@ function applyDefaultPermissions(
     disabledSkills,
   );
 
-  // Respect explicit deny on question (councillor)
+  // Respect an agent's explicit deny on question.
   const questionPerm = existing.question === 'deny' ? 'deny' : 'allow';
   const cancelTaskPerm = CANCEL_TASK_ALLOWED_AGENTS.has(agent.name)
     ? (existing.cancel_task ?? 'allow')
@@ -335,11 +286,8 @@ const SUBAGENT_FACTORIES: Record<SubagentName, AgentFactory> = {
   explorer: createExplorerAgent,
   librarian: createLibrarianAgent,
   oracle: createOracleAgent,
-  designer: createDesignerAgent,
   fixer: createFixerAgent,
   observer: createObserverAgent,
-  council: createCouncilAgent,
-  councillor: createCouncillorAgent,
 };
 
 // Public API
@@ -356,9 +304,6 @@ export function createAgents(
   options?: { projectDirectory?: string },
 ): AgentDefinition[] {
   const disabled = getDisabledAgents(config);
-  if (!config?.council) {
-    disabled.add('council');
-  }
 
   const primaryModel = getConfigPrimaryModel(config);
 
@@ -450,34 +395,6 @@ export function createAgents(
     ];
   });
 
-  const acpAgentNames = getAcpAgentNames(config)
-    .map(normalizeCustomAgentName)
-    .filter((name) => name.length > 0)
-    .filter((name) => {
-      if (!SAFE_AGENT_ALIAS_RE.test(name)) {
-        throw new Error(
-          `ACP agent name '${name}' must match /^[a-z][a-z0-9_-]*$/i`,
-        );
-      }
-      if (isKnownAgentName(name) || AGENT_ALIASES[name] !== undefined) {
-        throw new Error(
-          `ACP agent '${name}' conflicts with a built-in agent name or alias`,
-        );
-      }
-      if (customAgentNames.includes(name)) {
-        throw new Error(
-          `ACP agent '${name}' conflicts with a custom agent of the same name`,
-        );
-      }
-      return !disabled.has(name);
-    });
-
-  const protoAcpAgents = acpAgentNames.map((name) => {
-    const acp = config?.acpAgents?.[name];
-    if (!acp) throw new Error(`ACP agent '${name}' is missing config`);
-    return buildAcpAgentDefinition(name, acp, primaryModel);
-  });
-
   // 2. Apply overrides and default permissions to built-in subagents
   const builtInSubAgents = protoSubAgents.map((agent) => {
     const override = getAgentOverride(config, agent.name);
@@ -497,33 +414,7 @@ export function createAgents(
     return agent;
   });
 
-  const acpSubAgents = protoAcpAgents.map((agent) => {
-    applyDefaultPermissions(agent, undefined, config?.disabled_skills);
-    return agent;
-  });
-
-  // Build dynamic councillor agents from council config (flatten mode).
-  // Each councillor becomes a dispatchable subagent with its own model,
-  // so the orchestrator can task() them with native panes at depth 1.
-  const councillorAgents = buildCouncillorAgents(config, disabled).map(
-    (agent) => {
-      applyDefaultPermissions(agent, undefined, config?.disabled_skills);
-      return agent;
-    },
-  );
-
-  const allSubAgents = [
-    ...builtInSubAgents,
-    ...customSubAgents,
-    ...acpSubAgents,
-    ...councillorAgents,
-  ];
-
-  for (const agent of [...acpSubAgents, ...councillorAgents]) {
-    agent.config.prompt = appendTaskRejectionInstruction(
-      agent.config.prompt ?? '',
-    );
-  }
+  const allSubAgents = [...builtInSubAgents, ...customSubAgents];
 
   // 3. Create Orchestrator (with its own overrides and custom prompts)
   // DEFAULT_MODELS.orchestrator is undefined; model is resolved via override or
@@ -540,7 +431,7 @@ export function createAgents(
     undefined,
     undefined,
     disabled,
-    councillorAgents.length > 0 ? ['council'] : undefined,
+    undefined,
     !config?.disabled_tools?.includes('wait_for_user'),
   );
 
@@ -585,21 +476,6 @@ export function createAgents(
     })
     .filter((prompt): prompt is string => Boolean(prompt));
 
-  const acpOrchestratorPrompts = acpSubAgents.map((agent) => {
-    const acp = config?.acpAgents?.[agent.name];
-    if (acp?.orchestratorPrompt) return acp.orchestratorPrompt;
-    return [
-      `@${agent.name}`,
-      `- Lane: External ACP-connected agent (${
-        acp?.command ?? 'unknown command'
-      })`,
-      `- Role: ${agent.description ?? `External ACP agent ${agent.name}`}`,
-      '- **Delegate when:** The user explicitly asks for this ACP-backed agent, or the task matches its role and benefits from software/subscription-specific capabilities outside OpenCode.',
-      '- **Do not delegate when:** The built-in specialists can handle the task more directly or local file ownership would conflict with another writer lane.',
-      '- **Result handling:** Treat returned output as external-agent work. Reconcile any reported file changes before continuing.',
-    ].join('\n');
-  });
-
   // Validate display names
   const usedDisplayNames = new Set<string>();
   for (const [, displayName] of displayNameMap) {
@@ -619,8 +495,7 @@ export function createAgents(
   for (const displayName of usedDisplayNames) {
     if (
       (ALL_AGENT_NAMES as readonly string[]).includes(displayName) ||
-      customAgentNames.includes(displayName) ||
-      acpAgentNames.includes(displayName)
+      customAgentNames.includes(displayName)
     ) {
       throw new Error(
         `displayName '${displayName}' conflicts with an agent name`,
@@ -643,7 +518,6 @@ export function createAgents(
   };
 
   const rewrittenOverrides = extraOrchestratorPromptsList.map(rewritePrompt);
-  const rewrittenAcps = acpOrchestratorPrompts.map(rewritePrompt);
 
   let updatedPrompt = orchestrator.config.prompt ?? '';
 
@@ -651,21 +525,6 @@ export function createAgents(
     updatedPrompt = `${updatedPrompt}\n\n# Project-specific routing guidance\n\n${rewrittenOverrides.join(
       '\n\n',
     )}`;
-  }
-
-  if (rewrittenAcps.length > 0) {
-    updatedPrompt = `${updatedPrompt}\n\n${rewrittenAcps.join('\n\n')}`;
-  }
-
-  // Inject council-dispatch block if dynamic councillors exist (flatten mode)
-  if (councillorAgents.length > 0) {
-    const dispatchList = councillorAgents
-      .map(
-        (a: AgentDefinition) =>
-          `   - task(subagent_type='${a.name}', description='Councillor ${getCouncillorSeatName(a.name)} on <brief topic>', prompt=<user's question>)`,
-      )
-      .join('\n');
-    updatedPrompt = `${updatedPrompt}\n\n## Council Mode\n\nWhen you need to run a council or the user asks for consensus/multiple opinions, use this procedure INSTEAD of delegating to @council:\n\n1. If the question references an external resource (PR, URL, issue, doc), fetch its content FIRST using your own tools (webfetch/bash/gh), then embed a concise summary in the prompt you send to each councillor — councillors have read-only codebase access only and cannot fetch external content themselves.\n2. Dispatch the user's question (with any fetched context) to each councillor in PARALLEL via task():\n${dispatchList}\n3. Collect ALL councillor responses. If any councillor returns empty or does not respond within 3 minutes, proceed without it — do not wait indefinitely. If a councillor's response is empty, retry that councillor once before continuing.\n4. Call task(subagent_type='council', description='Synthesize council report') with a prompt that includes the original user question AND all councillor responses. For each councillor, label its response with its seat name AND its model (e.g. "alpha (gpt-5.6-luna)"). Format each councillor's seat name and response clearly separated. If a councillor failed or timed out, include that status explicitly (e.g. "beta (gemini-3-pro): FAILED/TIMED OUT") instead of omitting it. Skip only councillors that returned empty after one retry.\n5. Present the council's synthesized report.\n\nThis ensures each councillor runs with its own model and the council agent synthesizes the full multi-model consensus.`;
   }
 
   orchestrator.config.prompt = updatedPrompt;
@@ -695,16 +554,7 @@ export function getAgentConfigs(
       hidden?: boolean;
     },
   ): void => {
-    if (name === 'council') {
-      // Council is callable both as a primary agent (user-facing)
-      // and as a subagent (orchestrator can delegate to it)
-      sdkConfig.mode = 'all';
-    } else if (name === 'councillor' || name.startsWith('councillor-')) {
-      // Internal agent - subagent mode, hidden from @ autocomplete.
-      // Dynamic councillors are named councillor-<seat> (see council-agents.ts).
-      sdkConfig.mode = 'subagent';
-      sdkConfig.hidden = true;
-    } else if (isSubagent(name)) {
+    if (isSubagent(name)) {
       sdkConfig.mode = 'subagent';
     } else if (name === 'orchestrator') {
       sdkConfig.mode = 'primary';
@@ -712,9 +562,6 @@ export function getAgentConfigs(
       sdkConfig.mode = 'subagent';
     }
   };
-
-  const isInternalOnly = (name: string): boolean =>
-    name === 'councillor' || name.startsWith('councillor-');
 
   const entries: Array<[string, SDKAgentConfig]> = [];
 
@@ -739,7 +586,7 @@ export function getAgentConfigs(
       ? normalizeDisplayName(a.displayName)
       : undefined;
 
-    if (normalizedDisplayName && !isInternalOnly(a.name)) {
+    if (normalizedDisplayName) {
       entries.push([normalizedDisplayName, sdkConfig]);
       entries.push([a.name, { ...sdkConfig, hidden: true }]);
       continue;

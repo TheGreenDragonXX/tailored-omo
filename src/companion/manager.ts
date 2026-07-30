@@ -57,7 +57,7 @@ export function stateFilePath(): string {
     base,
     'opencode',
     'storage',
-    'oh-my-opencode-slim',
+    'tailored-omo',
     'companion-state.json',
   );
 }
@@ -72,7 +72,7 @@ function pidFilePath(): string {
     base,
     'opencode',
     'storage',
-    'oh-my-opencode-slim',
+    'tailored-omo',
     'companion.pid',
   );
 }
@@ -153,13 +153,13 @@ function defaultBinaryPath(): string {
       : path.join(os.homedir(), '.local', 'share');
   const binaryName =
     os.platform() === 'win32'
-      ? 'oh-my-opencode-slim-companion.exe'
-      : 'oh-my-opencode-slim-companion';
+      ? 'tailored-omo-companion.exe'
+      : 'tailored-omo-companion';
   return path.join(
     base,
     'opencode',
     'storage',
-    'oh-my-opencode-slim',
+    'tailored-omo',
     'bin',
     binaryName,
   );
@@ -491,9 +491,9 @@ export class CompanionManager {
         detached: true,
         env: {
           ...process.env,
-          OH_MY_OPENCODE_SLIM_COMPANION_SESSION_ID: this.id,
+          TAILORED_OMO_COMPANION_SESSION_ID: this.id,
           ...(this.config.debug === true
-            ? { OH_MY_OPENCODE_SLIM_COMPANION_DEBUG: '1' }
+            ? { TAILORED_OMO_COMPANION_DEBUG: '1' }
             : {}),
         },
         stdio: 'ignore',

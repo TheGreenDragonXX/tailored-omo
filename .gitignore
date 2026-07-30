@@ -89,14 +89,14 @@ captures/
 # Rust companion build artifacts
 companion/target/
 
-# BEGIN oh-my-opencode-slim clonedeps
+# BEGIN tailored-omo clonedeps
 .slim/clonedeps/repos/
-# END oh-my-opencode-slim clonedeps
+# END tailored-omo clonedeps
 
-# BEGIN oh-my-opencode-slim worktrees
+# BEGIN tailored-omo worktrees
 .slim/worktrees/
 .slim/worktrees.json
-# END oh-my-opencode-slim worktrees
+# END tailored-omo worktrees
 
 # Deepwork session artifacts
 .slim/deepwork/

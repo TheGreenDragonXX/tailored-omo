@@ -8,26 +8,24 @@ describe('skills permissions', () => {
   });
 
   it('should deny all skills for other agents by default', () => {
-    const permissions = getSkillPermissionsForAgent('designer');
+    const permissions = getSkillPermissionsForAgent('fixer');
     expect(permissions['*']).toBe('deny');
   });
 
   it('should allow bundled skills for specific agents', () => {
-    // Designer should only inherit the default non-orchestrator deny rule
-    const designerPerms = getSkillPermissionsForAgent('designer');
-    expect(Object.keys(designerPerms)).toEqual(['*']);
+    // Fixer should only inherit the default non-orchestrator deny rule
+    const fixerPerms = getSkillPermissionsForAgent('fixer');
+    expect(Object.keys(fixerPerms)).toEqual(['*']);
 
     // Oracle should have simplify allowed by default
     const oraclePerms = getSkillPermissionsForAgent('oracle');
     expect(oraclePerms.simplify).toBe('allow');
 
     const orchestratorPerms = getSkillPermissionsForAgent('orchestrator');
-    expect(orchestratorPerms.clonedeps).toBe('allow');
-    expect(orchestratorPerms.deepwork).toBe('allow');
     expect(orchestratorPerms['verification-planning']).toBe('allow');
     expect(orchestratorPerms.reflect).toBe('allow');
     expect(orchestratorPerms.worktrees).toBe('allow');
-    expect(orchestratorPerms['oh-my-opencode-slim']).toBe('allow');
+    expect(orchestratorPerms['tailored-omo']).toBe('allow');
   });
 
   it('should honor explicit skill list overrides', () => {
@@ -37,7 +35,7 @@ describe('skills permissions', () => {
     expect(Object.keys(emptyPerms).length).toBe(1);
 
     // Override with specific list
-    const specificPerms = getSkillPermissionsForAgent('designer', [
+    const specificPerms = getSkillPermissionsForAgent('fixer', [
       'my-skill',
       '!bad-skill',
     ]);
@@ -47,7 +45,7 @@ describe('skills permissions', () => {
   });
 
   it('should honor wildcard in explicit list', () => {
-    const wildcardPerms = getSkillPermissionsForAgent('designer', ['*']);
+    const wildcardPerms = getSkillPermissionsForAgent('fixer', ['*']);
     expect(wildcardPerms['*']).toBe('allow');
   });
 });

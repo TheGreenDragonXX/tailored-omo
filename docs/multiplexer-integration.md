@@ -16,7 +16,7 @@ while OpenCode keeps running in your main session.
 
 ## Overview
 
-When OpenCode launches child agent sessions, oh-my-opencode-slim can open panes for those sessions automatically.
+When OpenCode launches child agent sessions, tailored-omo can open panes for those sessions automatically.
 
 - **Real-time visibility** into agent activity
 - **Automatic pane management** while tasks run
@@ -85,7 +85,7 @@ omos() {
 
 ### 1. Enable the multiplexer
 
-Edit `~/.config/opencode/oh-my-opencode-slim.json` (or `.jsonc`):
+Edit `~/.config/opencode/tailored-omo.json` (or `.jsonc`):
 
 **Auto-detect (recommended):**
 

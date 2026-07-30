@@ -690,7 +690,7 @@ async function main(): Promise<void> {
       // board strategy for this run regardless of global settings.
       mkdirSync(path.join(scratch, '.opencode'), { recursive: true });
       writeFileSync(
-        path.join(scratch, '.opencode', 'oh-my-opencode-slim.json'),
+        path.join(scratch, '.opencode', 'tailored-omo.json'),
         `${JSON.stringify(
           {
             backgroundJobs: {

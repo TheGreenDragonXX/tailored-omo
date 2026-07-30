@@ -24,7 +24,7 @@ export type LoopPhase =
   | 'escalated'
   | 'cancelled';
 
-export type ExecuteAgent = 'fixer' | 'designer' | 'explorer' | 'librarian';
+export type ExecuteAgent = 'fixer' | 'explorer' | 'librarian';
 export type VerifyAgent = 'oracle' | 'observer' | 'test';
 
 export type SuccessCriterion =

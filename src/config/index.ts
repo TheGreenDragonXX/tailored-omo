@@ -1,5 +1,4 @@
 export * from './constants';
-export * from './council-schema';
 export {
   deepMerge,
   loadAgentPrompt,
@@ -7,7 +6,6 @@ export {
 } from './loader';
 export * from './schema';
 export {
-  getAcpAgentNames,
   getAgentOverride,
   getCustomAgentNames,
 } from './utils';

@@ -7,7 +7,7 @@ const EXPLORER_PROMPT = `You are Explorer - a fast codebase navigation specialis
 
 **When to use which tools**:
 - **Text/regex patterns** (strings, comments, variable names): grep
-- **Structural patterns** (function shapes, class structures): ast_grep_search
+- **Structural patterns** (function shapes, class structures): grep plus focused file reads
 - **File discovery** (find by name/extension): glob
 
 ${READONLY_FILE_OPERATIONS_RULES}

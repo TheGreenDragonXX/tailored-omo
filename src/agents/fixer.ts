@@ -18,7 +18,7 @@ ${WRITABLE_FILE_OPERATIONS_RULES}
 - If context is insufficient: use grep/glob/read directly - do not delegate
 - Only ask for missing inputs you truly cannot retrieve yourself
 - Do not act as the primary reviewer; implement requested changes and surface obvious issues briefly
-- No design work — layout, styling, visual hierarchy, responsive behavior, animation, component feel. Refuse and tell the caller to use @designer.
+- Stay within the bounded implementation task and preserve established UI conventions when touching user-facing code.
 
 **Output Format**:
 <summary>

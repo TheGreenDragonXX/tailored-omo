@@ -2206,7 +2206,7 @@ describe('task-session-manager hook', () => {
     board.registerLaunch({
       taskID: 'child-1',
       parentSessionID: 'parent-1',
-      agent: 'designer',
+      agent: 'fixer',
       description: 'design ui',
     });
     board.updateStatus({ taskID: 'child-1', state: 'running' });
@@ -2244,7 +2244,7 @@ describe('task-session-manager hook', () => {
     board.registerLaunch({
       taskID: 'child-1',
       parentSessionID: 'parent-1',
-      agent: 'designer',
+      agent: 'fixer',
       description: 'design ui',
     });
     board.updateStatus({ taskID: 'child-1', state: 'running' });
@@ -3074,12 +3074,12 @@ describe('task-session-manager hook', () => {
     // OpenCode can emit idle for a rate-limited child BEFORE FG sets
     // isFallbackInProgress. Immediate reconcile would mark completed while
     // FG re-prompts and the child keeps working. Delay + busy cancel keeps
-    // the job running (the observed council-b false-complete race).
+    // the job running (the observed reviewer-b false-complete race).
     const board = new BackgroundJobBoard();
     board.registerLaunch({
       taskID: 'child-b',
       parentSessionID: 'parent-1',
-      agent: 'councillor-reviewer-b',
+      agent: 'reviewer-b',
       description: 'audit distributed',
     });
 
@@ -3116,7 +3116,7 @@ describe('task-session-manager hook', () => {
     board.registerLaunch({
       taskID: 'child-b',
       parentSessionID: 'parent-1',
-      agent: 'councillor-reviewer-b',
+      agent: 'reviewer-b',
       description: 'audit distributed',
     });
 
@@ -3198,7 +3198,7 @@ describe('task-session-manager hook', () => {
 
   test('session.created early registration attributes each parallel child to its own pending call', async () => {
     // Regression: when a parent launches several task tools in parallel with
-    // different subagent types (e.g. council reviewers a/b/c), the old
+    // different subagent types (e.g. reviewers a/b/c), the old
     // peekByParent() returned the FIRST pending call for every child, so
     // all children were registered with the first subagent's agentType.
     // info.agent on the child session disambiguates which pending call

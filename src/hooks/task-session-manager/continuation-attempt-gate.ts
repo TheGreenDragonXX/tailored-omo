@@ -24,7 +24,7 @@ type ContinuationAttemptStore = {
   messageObjectIdentity: WeakMap<object, symbol>;
 };
 
-const STORE_KEY = Symbol.for('oh-my-opencode-slim.continuation-attempt-gate');
+const STORE_KEY = Symbol.for('tailored-omo.continuation-attempt-gate');
 
 function getStore(): ContinuationAttemptStore {
   const globalWithStore = globalThis as typeof globalThis & {

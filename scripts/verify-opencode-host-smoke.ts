@@ -197,8 +197,10 @@ async function verifyHostSmoke(tarballPath: string) {
       ),
     );
 
-    console.log('Installing opencode-ai into isolated test root...');
-    run('bun', ['add', 'opencode-ai@latest'], { cwd: hostDir });
+    console.log('Installing supported opencode-ai into isolated test root...');
+    // Keep this aligned with the OpenCode version validated for production.
+    // Pinning prevents an unrelated npm release race from changing the smoke test.
+    run('bun', ['add', 'opencode-ai@1.18.9'], { cwd: hostDir });
 
     const opencodeBin = path.join(hostDir, 'node_modules', '.bin', 'opencode');
     if (!existsSync(opencodeBin)) {
@@ -211,7 +213,7 @@ async function verifyHostSmoke(tarballPath: string) {
         {
           type: 'module',
           dependencies: {
-            'oh-my-opencode-slim': `file:${tarballTarget}`,
+            'tailored-omo': `file:${tarballTarget}`,
           },
         },
         null,
@@ -219,8 +221,8 @@ async function verifyHostSmoke(tarballPath: string) {
       ),
     );
     writeFileSync(
-      path.join(pluginDir, 'load-oh-my-opencode-slim.js'),
-      "export { default } from 'oh-my-opencode-slim';\n",
+      path.join(pluginDir, 'load-tailored-omo.js'),
+      "export { default } from 'tailored-omo';\n",
     );
 
     const config = JSON.stringify({

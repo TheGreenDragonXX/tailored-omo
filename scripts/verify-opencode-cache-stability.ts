@@ -487,18 +487,18 @@ async function main() {
     mkdirSync(configNodeModules, { recursive: true });
     symlinkSync(
       localPlugin.plugin,
-      path.join(configNodeModules, 'oh-my-opencode-slim'),
+      path.join(configNodeModules, 'tailored-omo'),
     );
     writeFileSync(
       path.join(config, 'package.json'),
       JSON.stringify({
         type: 'module',
-        dependencies: { 'oh-my-opencode-slim': `file:${localPlugin.plugin}` },
+        dependencies: { 'tailored-omo': `file:${localPlugin.plugin}` },
       }),
     );
     writeFileSync(
       path.join(plugins, 'load-plugin.js'),
-      "export { default } from 'oh-my-opencode-slim';\n",
+      "export { default } from 'tailored-omo';\n",
     );
     capture = await createCaptureServer(readPath);
     writeFileSync(

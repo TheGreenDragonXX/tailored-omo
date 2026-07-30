@@ -1440,13 +1440,13 @@ describe('ForegroundFallbackManager resolveChain cross-agent isolation', () => {
 });
 
 // ---------------------------------------------------------------------------
-// No-chain sessions (councillor / self-managed agents)
+// No-chain sessions (self-managed agents)
 // ---------------------------------------------------------------------------
 
 describe('ForegroundFallbackManager no-chain sessions', () => {
-  test('councillor session.status retry: no abort and no re-prompt', async () => {
-    // Councillor is owned by CouncilManager (own model chain + timeout).
-    // FG must not abort or re-prompt — that races the council lifecycle and
+  test('self-managed session.status retry: no abort and no re-prompt', async () => {
+    // The agent is owned by an external lifecycle manager.
+    // FG must not abort or re-prompt — that races the external lifecycle and
     // previously produced "[foreground-fallback] no chain configured" noise.
     const { client, mocks } = createMockClient();
     const mgr = new ForegroundFallbackManager(client, makeChains(), true, 3);
@@ -1455,8 +1455,8 @@ describe('ForegroundFallbackManager no-chain sessions', () => {
       type: 'message.updated',
       properties: {
         info: {
-          sessionID: 'councillor-sess',
-          agent: 'councillor',
+          sessionID: 'reviewer-sess',
+          agent: 'reviewer',
           providerID: 'openai',
           modelID: 'gpt-5.4',
         },
@@ -1466,7 +1466,7 @@ describe('ForegroundFallbackManager no-chain sessions', () => {
     await mgr.handleEvent({
       type: 'session.status',
       properties: {
-        sessionID: 'councillor-sess',
+        sessionID: 'reviewer-sess',
         status: {
           type: 'retry',
           attempt: 1,
@@ -1479,7 +1479,7 @@ describe('ForegroundFallbackManager no-chain sessions', () => {
     expect(mocks.promptAsync).not.toHaveBeenCalled();
   });
 
-  test('councillor session.error: no abort and no re-prompt', async () => {
+  test('self-managed session.error: no abort and no re-prompt', async () => {
     const { client, mocks } = createMockClient();
     const mgr = new ForegroundFallbackManager(client, makeChains(), true);
 
@@ -1487,8 +1487,8 @@ describe('ForegroundFallbackManager no-chain sessions', () => {
       type: 'message.updated',
       properties: {
         info: {
-          sessionID: 'councillor-err',
-          agent: 'councillor',
+          sessionID: 'reviewer-err',
+          agent: 'reviewer',
           providerID: 'openai',
           modelID: 'gpt-5.4',
         },
@@ -1498,7 +1498,7 @@ describe('ForegroundFallbackManager no-chain sessions', () => {
     await mgr.handleEvent({
       type: 'session.error',
       properties: {
-        sessionID: 'councillor-err',
+        sessionID: 'reviewer-err',
         error: { message: 'rate limit exceeded' },
       },
     });

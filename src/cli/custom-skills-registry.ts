@@ -30,19 +30,6 @@ export const CUSTOM_SKILLS: CustomSkill[] = [
     sourcePath: 'src/skills/codemap',
   },
   {
-    name: 'clonedeps',
-    description: 'Clone important dependency source for local inspection',
-    allowedAgents: ['orchestrator'],
-    sourcePath: 'src/skills/clonedeps',
-  },
-  {
-    name: 'deepwork',
-    description:
-      'Heavy/complex coding sessions and large modifications workflow',
-    allowedAgents: ['orchestrator'],
-    sourcePath: 'src/skills/deepwork',
-  },
-  {
     name: 'verification-planning',
     description:
       'Plan credible, proportionate evidence before non-trivial implementation',
@@ -57,11 +44,10 @@ export const CUSTOM_SKILLS: CustomSkill[] = [
     sourcePath: 'src/skills/reflect',
   },
   {
-    name: 'oh-my-opencode-slim',
-    description:
-      'Configure, customize, and safely improve oh-my-opencode-slim setups',
+    name: 'tailored-omo',
+    description: 'Configure, customize, and safely improve tailored-omo setups',
     allowedAgents: ['orchestrator'],
-    sourcePath: 'src/skills/oh-my-opencode-slim',
+    sourcePath: 'src/skills/tailored-omo',
   },
   {
     name: 'worktrees',

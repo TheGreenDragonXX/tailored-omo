@@ -22,9 +22,6 @@ pub struct AnimationFrame {
 impl Gifs {
     pub fn new() -> Self {
         let mut sheets: HashMap<&'static str, &'static [u8]> = HashMap::new();
-        sheets.insert("council", include_bytes!("../animations/council.jpg"));
-        sheets.insert("councillor", include_bytes!("../animations/council.jpg"));
-        sheets.insert("designer", include_bytes!("../animations/designer.jpg"));
         sheets.insert("explorer", include_bytes!("../animations/explorer.jpg"));
         sheets.insert("fixer", include_bytes!("../animations/fixer.jpg"));
         sheets.insert("input", include_bytes!("../animations/question.jpg"));
@@ -171,7 +168,6 @@ mod tests {
             "explorer",
             "librarian",
             "oracle",
-            "designer",
             "fixer",
         ] {
             assert_eq!(gifs.resolve_name(agent, "default"), agent);

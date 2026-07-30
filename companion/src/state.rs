@@ -77,7 +77,7 @@ pub fn state_file_path() -> PathBuf {
         });
     base.join("opencode")
         .join("storage")
-        .join("oh-my-opencode-slim")
+        .join("tailored-omo")
         .join("companion-state.json")
 }
 

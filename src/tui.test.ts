@@ -45,8 +45,7 @@ describe('tui sidebar agents', () => {
     expect(agentNames).toContain('explorer');
     expect(agentNames).toContain('fixer');
     expect(agentNames).not.toContain('observer');
-    expect(agentNames).not.toContain('council');
-    expect(agentNames).not.toContain('councillor');
+    expect(agentNames).not.toContain('removed-agent');
   });
 });
 
@@ -79,7 +78,7 @@ describe('readConfigInvalid', () => {
     originalEnv = { ...process.env };
     // Isolate from real user config and env presets
     delete process.env.OPENCODE_CONFIG_DIR;
-    delete process.env.OH_MY_OPENCODE_SLIM_PRESET;
+    delete process.env.TAILORED_OMO_PRESET;
     configHome = fs.mkdtempSync(path.join(os.tmpdir(), 'omos-tui-env-'));
     process.env.XDG_CONFIG_HOME = configHome;
   });
@@ -96,7 +95,7 @@ describe('readConfigInvalid', () => {
       const configDir = path.join(projectDir, '.opencode');
       fs.mkdirSync(configDir, { recursive: true });
       fs.writeFileSync(
-        path.join(configDir, 'oh-my-opencode-slim.json'),
+        path.join(configDir, 'tailored-omo.json'),
         JSON.stringify({ agents: { oracle: { temperature: 5 } } }),
       );
 
@@ -113,7 +112,7 @@ describe('readConfigInvalid', () => {
       const configDir = path.join(projectDir, '.opencode');
       fs.mkdirSync(configDir, { recursive: true });
       fs.writeFileSync(
-        path.join(configDir, 'oh-my-opencode-slim.json'),
+        path.join(configDir, 'tailored-omo.json'),
         JSON.stringify({ agents: { oracle: { model: 'valid/model' } } }),
       );
 
@@ -142,7 +141,7 @@ describe('readConfigInvalid', () => {
       const configDir = path.join(projectDir, '.opencode');
       fs.mkdirSync(configDir, { recursive: true });
       fs.writeFileSync(
-        path.join(configDir, 'oh-my-opencode-slim.json'),
+        path.join(configDir, 'tailored-omo.json'),
         JSON.stringify({ compactSidebar: false }),
       );
 
@@ -165,7 +164,7 @@ describe('tui plugin env disable', () => {
   });
 
   test('does not perform setup when plugin is disabled by env', async () => {
-    process.env.OH_MY_OPENCODE_SLIM_DISABLE = '1';
+    process.env.TAILORED_OMO_DISABLE = '1';
 
     let disposeRegistered = false;
     let renderRequested = false;

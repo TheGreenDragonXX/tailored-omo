@@ -121,7 +121,7 @@ describe('switchPresetOnDisk', () => {
     fs.mkdirSync(configDir, { recursive: true });
     process.env.OPENCODE_CONFIG_DIR = configDir;
 
-    const configPath = path.join(configDir, 'oh-my-opencode-slim.jsonc');
+    const configPath = path.join(configDir, 'tailored-omo.jsonc');
     fs.writeFileSync(
       configPath,
       `{
@@ -266,7 +266,7 @@ describe('writePreset', () => {
     fs.mkdirSync(configDir, { recursive: true });
     process.env.OPENCODE_CONFIG_DIR = configDir;
     fs.writeFileSync(
-      path.join(configDir, 'oh-my-opencode-slim.json'),
+      path.join(configDir, 'tailored-omo.json'),
       '{"preset":"old"}',
     );
 
@@ -276,10 +276,7 @@ describe('writePreset', () => {
 
     expect(ok).toBe(true);
     const persisted = JSON.parse(
-      fs.readFileSync(
-        path.join(configDir, 'oh-my-opencode-slim.json'),
-        'utf-8',
-      ),
+      fs.readFileSync(path.join(configDir, 'tailored-omo.json'), 'utf-8'),
     ) as { presets?: Record<string, unknown> };
     expect(persisted.presets?.scout).toEqual({
       explorer: { model: 'openai/gpt-5.6-luna' },
@@ -293,7 +290,7 @@ describe('writePreset', () => {
     fs.mkdirSync(configDir, { recursive: true });
     process.env.OPENCODE_CONFIG_DIR = configDir;
     fs.writeFileSync(
-      path.join(configDir, 'oh-my-opencode-slim.json'),
+      path.join(configDir, 'tailored-omo.json'),
       JSON.stringify({
         presets: { scout: { orchestrator: { model: 'old' } } },
       }),
@@ -304,10 +301,7 @@ describe('writePreset', () => {
     });
 
     const persisted = JSON.parse(
-      fs.readFileSync(
-        path.join(configDir, 'oh-my-opencode-slim.json'),
-        'utf-8',
-      ),
+      fs.readFileSync(path.join(configDir, 'tailored-omo.json'), 'utf-8'),
     ) as { presets?: Record<string, unknown> };
     expect(persisted.presets?.scout).toEqual({ oracle: { model: 'new' } });
   });
@@ -316,7 +310,7 @@ describe('writePreset', () => {
     const configDir = path.join(tempDir, 'opencode-config');
     fs.mkdirSync(configDir, { recursive: true });
     process.env.OPENCODE_CONFIG_DIR = configDir;
-    fs.writeFileSync(path.join(configDir, 'oh-my-opencode-slim.json'), '{}');
+    fs.writeFileSync(path.join(configDir, 'tailored-omo.json'), '{}');
 
     const ok = writePreset(tempDir, 'solo', {
       orchestrator: { model: 'x' },
@@ -324,10 +318,7 @@ describe('writePreset', () => {
 
     expect(ok).toBe(true);
     const persisted = JSON.parse(
-      fs.readFileSync(
-        path.join(configDir, 'oh-my-opencode-slim.json'),
-        'utf-8',
-      ),
+      fs.readFileSync(path.join(configDir, 'tailored-omo.json'), 'utf-8'),
     ) as { presets?: Record<string, unknown> };
     expect(persisted.presets?.solo).toEqual({ orchestrator: { model: 'x' } });
   });
@@ -339,7 +330,7 @@ describe('deletePreset', () => {
     fs.mkdirSync(configDir, { recursive: true });
     process.env.OPENCODE_CONFIG_DIR = configDir;
     fs.writeFileSync(
-      path.join(configDir, 'oh-my-opencode-slim.json'),
+      path.join(configDir, 'tailored-omo.json'),
       JSON.stringify({
         presets: {
           scout: { orchestrator: { model: 'a' } },
@@ -352,10 +343,7 @@ describe('deletePreset', () => {
 
     expect(ok).toBe(true);
     const persisted = JSON.parse(
-      fs.readFileSync(
-        path.join(configDir, 'oh-my-opencode-slim.json'),
-        'utf-8',
-      ),
+      fs.readFileSync(path.join(configDir, 'tailored-omo.json'), 'utf-8'),
     ) as { presets?: Record<string, unknown> };
     expect(persisted.presets).toEqual({ keep: { oracle: { model: 'b' } } });
   });
@@ -365,7 +353,7 @@ describe('deletePreset', () => {
     fs.mkdirSync(configDir, { recursive: true });
     process.env.OPENCODE_CONFIG_DIR = configDir;
     fs.writeFileSync(
-      path.join(configDir, 'oh-my-opencode-slim.json'),
+      path.join(configDir, 'tailored-omo.json'),
       JSON.stringify({
         preset: 'scout',
         presets: { scout: { orchestrator: { model: 'a' } } },
@@ -375,10 +363,7 @@ describe('deletePreset', () => {
     deletePreset(tempDir, 'scout');
 
     const persisted = JSON.parse(
-      fs.readFileSync(
-        path.join(configDir, 'oh-my-opencode-slim.json'),
-        'utf-8',
-      ),
+      fs.readFileSync(path.join(configDir, 'tailored-omo.json'), 'utf-8'),
     ) as { preset?: string; presets?: Record<string, unknown> };
     expect(persisted.preset).toBeUndefined();
     expect(persisted.presets).toEqual({});
@@ -389,7 +374,7 @@ describe('deletePreset', () => {
     fs.mkdirSync(configDir, { recursive: true });
     process.env.OPENCODE_CONFIG_DIR = configDir;
     fs.writeFileSync(
-      path.join(configDir, 'oh-my-opencode-slim.json'),
+      path.join(configDir, 'tailored-omo.json'),
       JSON.stringify({ presets: { keep: { orchestrator: { model: 'a' } } } }),
     );
 

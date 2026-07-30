@@ -3,7 +3,7 @@ import { CUSTOM_SKILLS } from './custom-skills';
 import type { InstallConfig } from './types';
 
 const SCHEMA_URL =
-  'https://unpkg.com/oh-my-opencode-slim@latest/oh-my-opencode-slim.schema.json';
+  'https://unpkg.com/tailored-omo@latest/tailored-omo.schema.json';
 
 export const GENERATED_PRESETS = ['openai', 'opencode-go'] as const;
 
@@ -14,7 +14,6 @@ export const MODEL_MAPPINGS = {
     oracle: { model: 'openai/gpt-5.6-sol', variant: 'xhigh' },
     librarian: { model: 'openai/gpt-5.6-luna', variant: 'low' },
     explorer: { model: 'openai/gpt-5.6-luna', variant: 'low' },
-    designer: { model: 'openai/gpt-5.6-luna', variant: 'medium' },
     fixer: { model: 'openai/gpt-5.6-luna', variant: 'xhigh' },
   },
   kimi: {
@@ -22,7 +21,6 @@ export const MODEL_MAPPINGS = {
     oracle: { model: 'kimi-for-coding/k2p5', variant: 'high' },
     librarian: { model: 'kimi-for-coding/k2p5', variant: 'low' },
     explorer: { model: 'kimi-for-coding/k2p5', variant: 'low' },
-    designer: { model: 'kimi-for-coding/k2p5', variant: 'medium' },
     fixer: { model: 'kimi-for-coding/k2p5', variant: 'low' },
   },
   copilot: {
@@ -30,10 +28,6 @@ export const MODEL_MAPPINGS = {
     oracle: { model: 'github-copilot/claude-opus-4.6', variant: 'high' },
     librarian: { model: 'github-copilot/grok-code-fast-1', variant: 'low' },
     explorer: { model: 'github-copilot/grok-code-fast-1', variant: 'low' },
-    designer: {
-      model: 'github-copilot/gemini-3.1-pro-preview',
-      variant: 'medium',
-    },
     fixer: { model: 'github-copilot/claude-sonnet-4.6', variant: 'low' },
   },
   'zai-plan': {
@@ -41,7 +35,6 @@ export const MODEL_MAPPINGS = {
     oracle: { model: 'zai-coding-plan/glm-5', variant: 'high' },
     librarian: { model: 'zai-coding-plan/glm-5', variant: 'low' },
     explorer: { model: 'zai-coding-plan/glm-5', variant: 'low' },
-    designer: { model: 'zai-coding-plan/glm-5', variant: 'medium' },
     fixer: { model: 'zai-coding-plan/glm-5', variant: 'low' },
   },
   'opencode-go': {
@@ -49,7 +42,6 @@ export const MODEL_MAPPINGS = {
     oracle: { model: 'opencode-go/qwen3.7-max', variant: 'max' },
     explorer: { model: 'opencode-go/deepseek-v4-flash', variant: 'high' },
     librarian: { model: 'opencode-go/deepseek-v4-flash', variant: 'high' },
-    designer: { model: 'opencode-go/kimi-k2.7-code' },
     fixer: { model: 'opencode-go/deepseek-v4-flash', variant: 'high' },
     observer: { model: 'opencode-go/mimo-v2.5' },
   },

@@ -11,7 +11,7 @@
  *  2. provider-level bytes: those messages passed through the same
  *     UIMessage construction as opencode's MessageV2.toModelMessagesEffect
  *     (text path, verbatim from
- *     .slim/clonedeps/repos/opencode/packages/opencode/src/session/message-v2.ts:692-780)
+ *     upstream OpenCode source, session/message-v2.ts:692-780)
  *     and then through a local provider-message serializer that keeps only
  *     provider-visible role and ordered text content.
  *
@@ -249,7 +249,7 @@ async function runTurn(
 function summarizeInjected(messages: any[]): string[] {
   return messages.map((m) => {
     const meta = m.parts?.[0]?.metadata;
-    if (meta?.['oh-my-opencode-slim.backgroundJobBoard'] === true) {
+    if (meta?.['tailored-omo.backgroundJobBoard'] === true) {
       return `BOARD(${meta.snapshotID ?? m.info.id})`;
     }
     return `${m.info.role.toUpperCase()}(${m.info.id})`;
@@ -383,8 +383,7 @@ describe('checkpoint-compatible board cache safety', () => {
     const boardMessageOf = (t: TurnResult): any =>
       (t.injected as never[]).find(
         (m: any) =>
-          m.parts?.[0]?.metadata?.['oh-my-opencode-slim.backgroundJobBoard'] ===
-          true,
+          m.parts?.[0]?.metadata?.['tailored-omo.backgroundJobBoard'] === true,
       );
 
     const s1turn1 = JSON.stringify(sortValue(boardMessageOf(turn1)));

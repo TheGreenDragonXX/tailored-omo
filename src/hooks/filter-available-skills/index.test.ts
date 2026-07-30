@@ -158,7 +158,7 @@ describe('createFilterAvailableSkillsHook', () => {
   test('supports wildcard allow with explicit exclusions', async () => {
     const config: PluginConfig = {
       agents: {
-        designer: {
+        reviewer: {
           skills: ['*', '!skill2'],
         },
       },
@@ -174,7 +174,7 @@ describe('createFilterAvailableSkillsHook', () => {
           ],
         },
         {
-          info: { role: 'user', agent: 'designer' },
+          info: { role: 'user', agent: 'reviewer' },
           parts: [{ type: 'text', text: 'check skills' }],
         },
       ],

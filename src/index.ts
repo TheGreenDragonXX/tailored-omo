@@ -34,7 +34,6 @@ import {
   createAutoUpdateCheckerHook,
   createCacheMonitorHook,
   createChatHeadersHook,
-  createDeepworkCommandHook,
   createDelegateTaskRetryHook,
   createFilterAvailableSkillsHook,
   createJsonErrorRecoveryHook,
@@ -49,7 +48,6 @@ import {
 import { processImageAttachments } from './hooks/image-hook';
 import { isMessageWithParts, type MessageWithParts } from './hooks/types';
 import { handleTaskSessionEvent } from './index-event';
-import { createInterviewManager } from './interview';
 import { createBuiltinMcps } from './mcp';
 import {
   getMultiplexer,
@@ -57,9 +55,6 @@ import {
   startAvailabilityCheck,
 } from './multiplexer';
 import {
-  ast_grep_replace,
-  ast_grep_search,
-  createAcpRunTool,
   createCancelTaskTool,
   createWaitForUserTool,
   createWebfetchTool,
@@ -87,23 +82,21 @@ async function appLog(
 ): Promise<void> {
   try {
     await ctx.client.app.log({
-      body: { service: 'oh-my-opencode-slim', level, message },
+      body: { service: 'tailored-omo', level, message },
     });
   } catch {
     // client.app.log may deadlock or be unavailable; stderr is the
     // fallback
     const prefix =
       level === 'error' ? 'ERROR' : level === 'warn' ? 'WARN' : 'INFO';
-    console.error(`[oh-my-opencode-slim] ${prefix}: ${message}`);
+    console.error(`[tailored-omo] ${prefix}: ${message}`);
   }
 }
 
 /** Minimum expected registrations for a healthy plugin load. */
 const HEALTH_CHECK = {
   minAgents: 5,
-  // Default tool set when council and ACP agents are not configured:
-  // cancel_task, wait_for_user, webfetch, ast_grep_search, ast_grep_replace.
-  minTools: 5,
+  minTools: 3,
   minMcps: 1,
 } as const;
 
@@ -111,8 +104,6 @@ const BASELINE_TOOL_NAMES = new Set([
   'cancel_task',
   'wait_for_user',
   'webfetch',
-  'ast_grep_search',
-  'ast_grep_replace',
 ]);
 
 /** @internal Exposed for deterministic health-threshold tests. */
@@ -150,7 +141,7 @@ const OhMyOpenCodeLite: Plugin = async (ctx) => {
   initLogger(sessionId);
 
   if (isPluginDisabledByEnv()) {
-    log('[plugin] disabled by OH_MY_OPENCODE_SLIM_DISABLE');
+    log('[plugin] disabled by TAILORED_OMO_DISABLE');
     return {};
   }
 
@@ -180,7 +171,6 @@ const OhMyOpenCodeLite: Plugin = async (ctx) => {
 
   let chatHeadersHook: ReturnType<typeof createChatHeadersHook>;
   let foregroundFallback: ForegroundFallbackManager;
-  let deepworkCommandHook: ReturnType<typeof createDeepworkCommandHook>;
   let reflectCommandHook: ReturnType<typeof createReflectCommandHook>;
   let loopCommandHook: ReturnType<typeof createLoopCommandHook>;
   let taskSessionManagerHook: ReturnType<typeof createTaskSessionManagerHook>;
@@ -195,11 +185,9 @@ const OhMyOpenCodeLite: Plugin = async (ctx) => {
   let jsonErrorRecoveryAfter: (i: unknown, o: unknown) => Promise<void>;
   let taskSessionManagerAfter: (i: unknown, o: unknown) => Promise<void>;
   let backgroundJobBoard: BackgroundJobBoard;
-  let interviewManager: ReturnType<typeof createInterviewManager>;
   let companionManager: CompanionManager;
   let cancelTaskTools: ReturnType<typeof createCancelTaskTool>;
   let waitForUserTools: ReturnType<typeof createWaitForUserTool>;
-  let acpRunTools: Record<string, ReturnType<typeof createAcpRunTool>>;
   let webfetch: ReturnType<typeof createWebfetchTool>;
   let tools: Record<string, ToolDefinition>;
   let rewriteDisplayNameMentions: ReturnType<
@@ -278,10 +266,6 @@ const OhMyOpenCodeLite: Plugin = async (ctx) => {
     }
 
     mcps = createBuiltinMcps(config.disabled_mcps, config.websearch);
-    acpRunTools =
-      Object.keys(config.acpAgents ?? {}).length > 0
-        ? { acp_run: createAcpRunTool(config.acpAgents) }
-        : {};
     webfetch = createWebfetchTool(ctx);
     backgroundJobBoard = new BackgroundJobBoard({
       maxReusablePerAgent:
@@ -325,8 +309,8 @@ const OhMyOpenCodeLite: Plugin = async (ctx) => {
     chatHeadersHook = createChatHeadersHook(ctx);
 
     // Initialize foreground fallback manager for runtime model switching.
-    // Agents without a chain (e.g. councillor, owned by CouncilManager) are
-    // left alone — FG only aborts/re-prompts when it has a model to switch to.
+    // Agents without a chain are left alone — foreground fallback only
+    // aborts/re-prompts when it has a model to switch to.
     foregroundFallback = new ForegroundFallbackManager(
       ctx.client,
       runtimeChains,
@@ -335,7 +319,6 @@ const OhMyOpenCodeLite: Plugin = async (ctx) => {
       sessionLifecycle,
     );
 
-    deepworkCommandHook = createDeepworkCommandHook();
     reflectCommandHook = createReflectCommandHook();
     loopCommandHook = createLoopCommandHook();
     taskSessionManagerHook = createTaskSessionManagerHook(ctx, {
@@ -428,7 +411,6 @@ const OhMyOpenCodeLite: Plugin = async (ctx) => {
     taskSessionManagerAfter = wrapPostToolHook('task-session-manager', (i, o) =>
       taskSessionManagerHook['tool.execute.after'](i as never, o as never),
     );
-    interviewManager = createInterviewManager(ctx, config);
     companionManager = new CompanionManager(
       `proc_${process.pid}`,
       ctx.directory,
@@ -454,10 +436,7 @@ const OhMyOpenCodeLite: Plugin = async (ctx) => {
     tools = {
       ...cancelTaskTools,
       ...waitForUserTools,
-      ...acpRunTools,
       webfetch,
-      ast_grep_search,
-      ast_grep_replace,
     };
     if (config.disabled_tools && config.disabled_tools.length > 0) {
       const disabledTools = new Set(config.disabled_tools);
@@ -474,7 +453,7 @@ const OhMyOpenCodeLite: Plugin = async (ctx) => {
     await appLog(
       ctx,
       'error',
-      `INIT FAILED: ${String(err)}. Report at github.com/alvinunreal/oh-my-opencode-slim/issues/310`,
+      `INIT FAILED: ${String(err)}. Report at github.com/TheGreenDragonXX/tailored-omo/issues`,
     );
     throw err;
   }
@@ -501,7 +480,7 @@ const OhMyOpenCodeLite: Plugin = async (ctx) => {
       `  mcps:   ${mcpCount} (expected >=${mcpThreshold})`,
       'This usually means a dependency failed to resolve (jsdom, etc).',
       'If you recently updated opencode, see:',
-      '  github.com/alvinunreal/oh-my-opencode-slim/issues/310',
+      '  github.com/TheGreenDragonXX/tailored-omo/issues',
     ].join('\n');
     log(`[plugin] WARN: ${msg}`);
     await appLog(ctx, 'warn', msg);
@@ -574,7 +553,7 @@ const OhMyOpenCodeLite: Plugin = async (ctx) => {
   }
 
   return {
-    name: 'oh-my-opencode-slim',
+    name: 'tailored-omo',
 
     agent: agents,
 
@@ -805,13 +784,6 @@ const OhMyOpenCodeLite: Plugin = async (ctx) => {
       const tuiAgentModels: Record<string, string> = {};
       const tuiAgentVariants: Record<string, string> = {};
       for (const agentDef of agentDefs) {
-        if (
-          agentDef.name === 'council' ||
-          agentDef.name === 'councillor' ||
-          agentDef.name.startsWith('councillor-')
-        )
-          continue;
-
         const entry = configAgent[agentDef.name] as
           | Record<string, unknown>
           | undefined;
@@ -905,8 +877,6 @@ const OhMyOpenCodeLite: Plugin = async (ctx) => {
         agentConfigEntry.permission = agentPermission;
       }
 
-      interviewManager.registerCommand(opencodeConfig);
-      deepworkCommandHook.registerCommand(opencodeConfig);
       reflectCommandHook.registerCommand(opencodeConfig);
       loopCommandHook.registerCommand(opencodeConfig);
     },
@@ -1006,12 +976,6 @@ const OhMyOpenCodeLite: Plugin = async (ctx) => {
       // Handle auto-update checking
       await autoUpdateChecker.event(input);
 
-      await interviewManager.handleEvent(
-        input as {
-          event: { type: string; properties?: Record<string, unknown> };
-        },
-      );
-
       if (
         event.type === 'permission.asked' ||
         event.type === 'question.asked'
@@ -1065,24 +1029,6 @@ const OhMyOpenCodeLite: Plugin = async (ctx) => {
     },
 
     'command.execute.before': async (input, output) => {
-      await interviewManager.handleCommandExecuteBefore(
-        input as {
-          command: string;
-          sessionID: string;
-          arguments: string;
-        },
-        output as { parts: Array<{ type: string; text?: string }> },
-      );
-
-      await deepworkCommandHook.handleCommandExecuteBefore(
-        input as {
-          command: string;
-          sessionID: string;
-          arguments: string;
-        },
-        output as { parts: Array<{ type: string; text?: string }> },
-      );
-
       await reflectCommandHook.handleCommandExecuteBefore(
         input as {
           command: string;

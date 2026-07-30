@@ -1,11 +1,9 @@
 import { z } from 'zod';
 import { DEFAULT_MAX_RETAINED_SNAPSHOTS } from './constants';
-import { CouncilConfigSchema } from './council-schema';
 
 const MANUAL_AGENT_NAMES = [
   'orchestrator',
   'oracle',
-  'designer',
   'explorer',
   'librarian',
   'fixer',
@@ -44,7 +42,6 @@ export const ManualPlanSchema = z
   .object({
     orchestrator: ManualAgentPlanSchema,
     oracle: ManualAgentPlanSchema,
-    designer: ManualAgentPlanSchema,
     explorer: ManualAgentPlanSchema,
     librarian: ManualAgentPlanSchema,
     fixer: ManualAgentPlanSchema,
@@ -182,21 +179,6 @@ export type WebsearchConfig = z.infer<typeof WebsearchConfigSchema>;
 export const McpNameSchema = z.enum(['websearch', 'context7', 'gh_grep']);
 export type McpName = z.infer<typeof McpNameSchema>;
 
-export const InterviewConfigSchema = z.object({
-  maxQuestions: z.number().int().min(1).max(10).default(2),
-  outputFolder: z.string().min(1).default('interview'),
-  autoOpenBrowser: z
-    .boolean()
-    .default(true)
-    .describe(
-      'Automatically open the interview UI in your default browser during interactive runs. Disabled automatically in tests and CI.',
-    ),
-  port: z.number().int().min(0).max(65535).default(0),
-  dashboard: z.boolean().default(false),
-});
-
-export type InterviewConfig = z.infer<typeof InterviewConfigSchema>;
-
 export const BackgroundJobsConfigSchema = z.object({
   strategy: z
     .enum(['latest', 'checkpoint-compatible'])
@@ -299,41 +281,6 @@ export const CompanionConfigSchema = z.object({
 
 export type CompanionConfig = z.infer<typeof CompanionConfigSchema>;
 
-export const AcpAgentPermissionModeSchema = z.enum(['ask', 'allow', 'reject']);
-
-export const MAX_ACP_TIMEOUT_MS = 2_147_483_647;
-
-export const AcpAgentConfigSchema = z
-  .object({
-    command: z.string().min(1),
-    args: z.array(z.string()).default([]),
-    env: z.record(z.string(), z.string()).default({}),
-    cwd: z.string().min(1).optional(),
-    description: z.string().min(1).optional(),
-    prompt: z.string().min(1).optional(),
-    orchestratorPrompt: z.string().min(1).optional(),
-    wrapperModel: ProviderModelIdSchema.optional(),
-    timeoutMs: z
-      .number()
-      .int()
-      .min(0)
-      .max(MAX_ACP_TIMEOUT_MS)
-      .default(0)
-      .describe(
-        'Timeout for a single ACP run in milliseconds. Set to 0 to disable the timeout.',
-      ),
-    permissionMode: AcpAgentPermissionModeSchema.default('ask'),
-  })
-  .strict();
-
-export const AcpAgentsConfigSchema = z.record(z.string(), AcpAgentConfigSchema);
-
-export type AcpAgentPermissionMode = z.infer<
-  typeof AcpAgentPermissionModeSchema
->;
-export type AcpAgentConfig = z.infer<typeof AcpAgentConfigSchema>;
-export type AcpAgentsConfig = z.infer<typeof AcpAgentsConfigSchema>;
-
 function rejectOrchestratorPromptOnOrchestrator(
   overrides: Record<string, z.infer<typeof AgentOverrideConfigSchema>>,
   ctx: z.RefinementCtx,
@@ -381,7 +328,7 @@ export const PluginConfigSchema = z
       .describe(
         'Agent names to disable completely. ' +
           'Disabled agents are not instantiated and cannot be delegated to. ' +
-          'Orchestrator and council internal agents (councillor) cannot be disabled. ' +
+          'The Orchestrator cannot be disabled. ' +
           "By default, 'observer' is disabled. Remove it from this list and configure a vision-capable model to enable.",
       ),
     image_routing: z
@@ -417,12 +364,9 @@ export const PluginConfigSchema = z
     // Multiplexer config
     multiplexer: MultiplexerConfigSchema.optional(),
     websearch: WebsearchConfigSchema.optional(),
-    interview: InterviewConfigSchema.optional(),
     backgroundJobs: BackgroundJobsConfigSchema.optional(),
     fallback: FailoverConfigSchema.optional(),
-    council: CouncilConfigSchema.optional(),
     companion: CompanionConfigSchema.optional(),
-    acpAgents: AcpAgentsConfigSchema.optional(),
   })
   .superRefine((value, ctx) => {
     if (value.agents) {

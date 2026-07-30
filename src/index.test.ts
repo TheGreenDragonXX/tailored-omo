@@ -3,12 +3,12 @@ import plugin, { minimumExpectedToolCount } from './index';
 
 describe('plugin health thresholds', () => {
   test('accounts only for intentionally disabled baseline tools', () => {
-    expect(minimumExpectedToolCount()).toBe(5);
-    expect(minimumExpectedToolCount(['wait_for_user'])).toBe(4);
+    expect(minimumExpectedToolCount()).toBe(3);
+    expect(minimumExpectedToolCount(['wait_for_user'])).toBe(2);
     expect(minimumExpectedToolCount(['wait_for_user', 'wait_for_user'])).toBe(
-      4,
+      2,
     );
-    expect(minimumExpectedToolCount(['unknown_tool'])).toBe(5);
+    expect(minimumExpectedToolCount(['unknown_tool'])).toBe(3);
   });
 });
 
@@ -24,7 +24,7 @@ describe('plugin env disable', () => {
   });
 
   test('returns empty hooks without reading plugin context', async () => {
-    process.env.OH_MY_OPENCODE_SLIM_DISABLE = '1';
+    process.env.TAILORED_OMO_DISABLE = '1';
 
     const ctx = new Proxy(
       {},
@@ -49,17 +49,13 @@ describe('plugin tool registration', () => {
 
   beforeEach(() => {
     originalEnv = { ...process.env };
-    delete process.env.OH_MY_OPENCODE_SLIM_DISABLE;
+    delete process.env.TAILORED_OMO_DISABLE;
     process.env.OPENCODE_CONFIG_DIR =
-      '/private/tmp/oh-my-opencode-slim-hitl-empty-config';
-    process.env.XDG_CONFIG_HOME =
-      '/private/tmp/oh-my-opencode-slim-hitl-empty-xdg';
-    process.env.XDG_DATA_HOME =
-      '/private/tmp/oh-my-opencode-slim-hitl-empty-data';
-    process.env.XDG_CACHE_HOME =
-      '/private/tmp/oh-my-opencode-slim-hitl-empty-cache';
-    process.env.OPENCODE_LOG_DIR =
-      '/private/tmp/oh-my-opencode-slim-hitl-empty-logs';
+      '/private/tmp/tailored-omo-hitl-empty-config';
+    process.env.XDG_CONFIG_HOME = '/private/tmp/tailored-omo-hitl-empty-xdg';
+    process.env.XDG_DATA_HOME = '/private/tmp/tailored-omo-hitl-empty-data';
+    process.env.XDG_CACHE_HOME = '/private/tmp/tailored-omo-hitl-empty-cache';
+    process.env.OPENCODE_LOG_DIR = '/private/tmp/tailored-omo-hitl-empty-logs';
   });
 
   afterEach(() => {
@@ -86,8 +82,8 @@ describe('plugin tool registration', () => {
 
     const hooks = await plugin({
       client,
-      directory: '/private/tmp/oh-my-opencode-slim-hitl-project',
-      worktree: '/private/tmp/oh-my-opencode-slim-hitl-project',
+      directory: '/private/tmp/tailored-omo-hitl-project',
+      worktree: '/private/tmp/tailored-omo-hitl-project',
       serverUrl: new URL('http://127.0.0.1:4096'),
     } as never);
 

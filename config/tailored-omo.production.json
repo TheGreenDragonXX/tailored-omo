@@ -1,0 +1,150 @@
+{
+  "preset": "balanced",
+  "autoUpdate": false,
+  "compactSidebar": false,
+  "disabled_agents": [],
+  "image_routing": "auto",
+  "presets": {
+    "balanced": {
+      "orchestrator": {
+        "model": [
+          { "id": "opencode-go/minimax-m3", "variant": "thinking" },
+          { "id": "opencode-go/deepseek-v4-pro", "variant": "high" },
+          { "id": "opencode-go/qwen3.7-plus", "variant": "high" }
+        ]
+      },
+      "fixer": {
+        "model": [
+          "ollama/swarm-smart-qwen36-27b-iq4xs:latest",
+          "ollama/swarm-worker-gpt-oss-20b-2x32k:latest",
+          { "id": "opencode-go/deepseek-v4-flash", "variant": "high" }
+        ]
+      }
+    },
+    "parallel-small": {
+      "orchestrator": {
+        "model": [
+          { "id": "opencode-go/minimax-m3", "variant": "thinking" },
+          { "id": "opencode-go/deepseek-v4-pro", "variant": "high" },
+          { "id": "opencode-go/qwen3.7-plus", "variant": "high" }
+        ]
+      },
+      "fixer": {
+        "model": [
+          "ollama/swarm-worker-gpt-oss-20b-2x32k:latest",
+          "ollama/swarm-smart-qwen36-27b-iq4xs:latest",
+          { "id": "opencode-go/deepseek-v4-flash", "variant": "high" }
+        ]
+      }
+    },
+    "fast-local": {
+      "orchestrator": {
+        "model": [
+          { "id": "opencode-go/minimax-m3", "variant": "thinking" },
+          { "id": "opencode-go/deepseek-v4-pro", "variant": "high" }
+        ]
+      },
+      "fixer": {
+        "model": [
+          "ollama/swarm-fast-qwen36-35b:latest",
+          "ollama/swarm-worker-gpt-oss-20b-2x32k:latest",
+          { "id": "opencode-go/deepseek-v4-flash", "variant": "high" }
+        ]
+      }
+    },
+    "quality-local": {
+      "orchestrator": {
+        "model": [
+          { "id": "opencode-go/minimax-m3", "variant": "thinking" },
+          { "id": "opencode-go/deepseek-v4-pro", "variant": "high" }
+        ]
+      },
+      "fixer": {
+        "model": [
+          "ollama/swarm-smart-qwen36-27b-iq4xs:latest",
+          "ollama/swarm-smart-hq-qwen36-27b-q4kxl:latest",
+          { "id": "opencode-go/deepseek-v4-flash", "variant": "high" }
+        ]
+      }
+    },
+    "hq-manual": {
+      "orchestrator": {
+        "model": [
+          { "id": "opencode-go/minimax-m3", "variant": "thinking" },
+          { "id": "opencode-go/deepseek-v4-pro", "variant": "high" }
+        ]
+      },
+      "fixer": {
+        "model": [
+          "ollama/swarm-smart-hq-qwen36-27b-q4kxl:latest",
+          "ollama/swarm-smart-qwen36-27b-iq4xs:latest",
+          { "id": "opencode-go/deepseek-v4-flash", "variant": "high" }
+        ]
+      }
+    }
+  },
+  "agents": {
+    "orchestrator": {
+      "skills": ["*"],
+      "mcps": ["websearch", "gh_grep"]
+    },
+    "explorer": {
+      "model": [
+        { "id": "opencode-go/deepseek-v4-flash", "variant": "high" },
+        "ollama/swarm-worker-gpt-oss-20b-2x32k:latest"
+      ],
+      "skills": [],
+      "mcps": []
+    },
+    "librarian": {
+      "model": [
+        { "id": "opencode-go/deepseek-v4-flash", "variant": "high" },
+        { "id": "opencode-go/qwen3.6-plus", "variant": "high" }
+      ],
+      "skills": [],
+      "mcps": ["websearch", "context7", "gh_grep"]
+    },
+    "oracle": {
+      "model": [
+        { "id": "opencode-go/qwen3.7-max", "variant": "max" },
+        { "id": "opencode-go/deepseek-v4-pro", "variant": "high" }
+      ],
+      "skills": ["simplify"],
+      "mcps": []
+    },
+    "fixer": {
+      "skills": [],
+      "mcps": []
+    },
+    "observer": {
+      "model": "opencode-go/mimo-v2.5",
+      "skills": [],
+      "mcps": []
+    }
+  },
+  "backgroundJobs": {
+    "strategy": "latest",
+    "continueOnIdle": true
+  },
+  "fallback": {
+    "enabled": true,
+    "timeoutMs": 180000,
+    "retryDelayMs": 500,
+    "maxRetries": 2,
+    "retry_on_empty": true
+  },
+  "multiplexer": {
+    "type": "auto",
+    "layout": "main-vertical",
+    "main_pane_size": 60
+  },
+  "companion": {
+    "enabled": false,
+    "position": "bottom-right",
+    "size": "medium",
+    "gifPack": "default",
+    "loopStyle": "classic",
+    "speed": 1,
+    "debug": false
+  }
+}

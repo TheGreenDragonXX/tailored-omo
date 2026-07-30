@@ -104,7 +104,7 @@ export async function handleEvent(
       // Peek (don't take) so tool.execute.after can still re-register.
       //
       // When the parent has multiple task calls in flight at once (e.g.
-      // parallel council reviewers), `info.agent` on the child session
+      // parallel specialist reviewers), `info.agent` on the child session
       // identifies which subagent started it; prefer the matching
       // pending call so we don't attribute the child to the wrong agent.
       const pending = deps.pendingCallTracker.peekByParentAndAgent(

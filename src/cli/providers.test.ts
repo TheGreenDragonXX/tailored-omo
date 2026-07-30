@@ -23,7 +23,7 @@ describe('providers', () => {
     });
 
     expect(config.$schema).toBe(
-      'https://unpkg.com/oh-my-opencode-slim@latest/oh-my-opencode-slim.schema.json',
+      'https://unpkg.com/tailored-omo@latest/tailored-omo.schema.json',
     );
     expect(config.preset).toBe('openai');
     expect(config.disabled_agents).toBeUndefined();
@@ -52,7 +52,6 @@ describe('providers', () => {
       oracle: { model: 'openai/gpt-5.6-sol', variant: 'xhigh' },
       librarian: { model: 'openai/gpt-5.6-luna', variant: 'low' },
       explorer: { model: 'openai/gpt-5.6-luna', variant: 'low' },
-      designer: { model: 'openai/gpt-5.6-luna', variant: 'medium' },
       fixer: { model: 'openai/gpt-5.6-luna', variant: 'xhigh' },
     } as const;
 
@@ -77,14 +76,11 @@ describe('providers', () => {
     expect(agents.orchestrator.variant).toBe('thinking');
     expect(agents.oracle.model).toBe('opencode-go/qwen3.7-max');
     expect(agents.oracle.variant).toBe('max');
-    expect(agents.council).toBeUndefined();
     expect(agents.librarian.model).toBe('opencode-go/deepseek-v4-flash');
     expect(agents.librarian.variant).toBe('high');
     expect(agents.librarian.mcps).toEqual(['websearch', 'context7', 'gh_grep']);
     expect(agents.explorer.model).toBe('opencode-go/deepseek-v4-flash');
     expect(agents.explorer.variant).toBe('high');
-    expect(agents.designer.model).toBe('opencode-go/kimi-k2.7-code');
-    expect(agents.designer.variant).toBeUndefined();
     expect(agents.fixer.model).toBe('opencode-go/deepseek-v4-flash');
     expect(agents.fixer.variant).toBe('high');
     expect(agents.observer.model).toBe('opencode-go/mimo-v2.5');
@@ -172,9 +168,6 @@ describe('providers', () => {
     // Orchestrator should implicitly cover bundled codemap via '*'
     expect(agents.orchestrator.skills).toContain('*');
 
-    // Designer should have no bundled skills by default
-    expect(agents.designer.skills).toEqual([]);
-
     // Explorer should have no bundled skills by default
     expect(agents.explorer.skills).toEqual([]);
 
@@ -208,6 +201,5 @@ describe('providers', () => {
     expect(agents.librarian.mcps).toContain('websearch');
     expect(agents.librarian.mcps).toContain('context7');
     expect(agents.librarian.mcps).toContain('gh_grep');
-    expect(agents.designer.mcps).toEqual([]);
   });
 });

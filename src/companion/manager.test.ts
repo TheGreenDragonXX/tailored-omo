@@ -249,13 +249,13 @@ describe('CompanionManager', () => {
     m.onLoad();
     m.onSessionStatus({
       sessionId: 'ses_a',
-      agent: 'designer',
+      agent: 'fixer',
       status: 'busy',
     });
     m.onWaitingInput();
     m.onInputResolved();
     expect(readState().sessions[0].status).toBe('busy');
-    expect(readState().sessions[0].active_agents).toEqual(['designer']);
+    expect(readState().sessions[0].active_agents).toEqual(['fixer']);
   });
 
   it('deduplicates by session, not by agent type', () => {
@@ -338,7 +338,7 @@ describe('CompanionManager', () => {
     b.onLoad();
     a.onSessionStatus({
       sessionId: 'ses_1',
-      agent: 'designer',
+      agent: 'fixer',
       status: 'busy',
     });
     b.onSessionStatus({
@@ -353,7 +353,7 @@ describe('CompanionManager', () => {
     const sb = state.sessions.find(
       (s: { session_id: string }) => s.session_id === 'b',
     );
-    expect(sa.active_agents).toEqual(['designer']);
+    expect(sa.active_agents).toEqual(['fixer']);
     expect(sb.active_agents).toEqual(['librarian']);
   });
 

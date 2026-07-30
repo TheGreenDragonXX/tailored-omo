@@ -244,7 +244,7 @@ describe('auto-update-checker/index', () => {
 
     expect(cacheMocks.preparePackageUpdate).toHaveBeenCalledWith(
       '0.9.11',
-      'oh-my-opencode-slim',
+      'tailored-omo',
       undefined,
       'latest',
     );
@@ -253,7 +253,7 @@ describe('auto-update-checker/index', () => {
       expect.objectContaining({ cwd: '/tmp/opencode-staging' }),
     );
     expect(skillSyncMocks.syncBundledSkillsFromPackage).toHaveBeenCalledWith(
-      '/tmp/opencode/node_modules/oh-my-opencode-slim',
+      '/tmp/opencode/node_modules/tailored-omo',
     );
     expect(showToast).toHaveBeenCalledWith({
       body: {
@@ -583,7 +583,7 @@ describe('auto-update-checker/index', () => {
 
     expect(
       companionUpdaterMocks.loadCompanionManifestFromPackageRoot,
-    ).toHaveBeenCalledWith('/tmp/opencode/node_modules/oh-my-opencode-slim');
+    ).toHaveBeenCalledWith('/tmp/opencode/node_modules/tailored-omo');
     expect(companionUpdaterMocks.ensureCompanionVersion).toHaveBeenCalledWith({
       config: { enabled: true },
       manifest: {
@@ -880,9 +880,9 @@ describe('auto-update-checker/index', () => {
 
     expect(showToast).toHaveBeenCalledWith({
       body: {
-        title: 'oh-my-opencode-slim v2.0.0 is available.',
+        title: 'tailored-omo v2.0.0 is available.',
         message:
-          'It requires OpenCode background subagents.\nRun: bunx oh-my-opencode-slim@latest install',
+          'It requires OpenCode background subagents.\nRun: bunx tailored-omo@latest install',
         variant: 'info',
         duration: 12000,
       },
@@ -916,7 +916,7 @@ describe('auto-update-checker/index', () => {
     expect(showToast).toHaveBeenCalledTimes(1);
     expect(showToast).toHaveBeenCalledWith({
       body: expect.objectContaining({
-        title: 'oh-my-opencode-slim v2.0.0 is available.',
+        title: 'tailored-omo v2.0.0 is available.',
       }),
     });
     expect(cacheMocks.preparePackageUpdate).not.toHaveBeenCalled();

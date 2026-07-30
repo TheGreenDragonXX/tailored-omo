@@ -70,11 +70,11 @@ export function parseArgs(args: string[]): InstallArgs {
 
 function printHelp(): void {
   console.log(`
-oh-my-opencode-slim installer
+tailored-omo installer
 
 Usage:
-  bunx oh-my-opencode-slim install [OPTIONS]
-  bunx oh-my-opencode-slim doctor [OPTIONS]
+  bunx tailored-omo install [OPTIONS]
+  bunx tailored-omo doctor [OPTIONS]
 
 Options:
   --skills=yes|no|force  Install bundled skills; force replaces existing skill
@@ -102,12 +102,12 @@ OpenAI is active unless --preset selects another generated preset.
 For the full config reference, see docs/configuration.md.
 
 Examples:
-  bunx oh-my-opencode-slim install
-  bunx oh-my-opencode-slim install --no-tui --skills=yes
-  bunx oh-my-opencode-slim install --background-subagents=yes
-  bunx oh-my-opencode-slim install --preset=opencode-go
-  bunx oh-my-opencode-slim install --reset
-  bunx oh-my-opencode-slim doctor
+  bunx tailored-omo install
+  bunx tailored-omo install --no-tui --skills=yes
+  bunx tailored-omo install --background-subagents=yes
+  bunx tailored-omo install --preset=opencode-go
+  bunx tailored-omo install --reset
+  bunx tailored-omo doctor
 `);
 }
 

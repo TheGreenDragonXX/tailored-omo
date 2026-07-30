@@ -56,7 +56,7 @@ export function switchPresetOnDisk(
     const hint =
       available.length > 0
         ? `Available presets: ${available.join(', ')}`
-        : 'No presets configured. Define presets in oh-my-opencode-slim.jsonc.';
+        : 'No presets configured. Define presets in tailored-omo.jsonc.';
     return {
       ok: false,
       presetName,
@@ -186,7 +186,7 @@ export function formatPresetList(
 ): string {
   const names = Object.keys(presets);
   if (names.length === 0) {
-    return 'No presets configured. Define presets in oh-my-opencode-slim.jsonc under the "presets" field.';
+    return 'No presets configured. Define presets in tailored-omo.jsonc under the "presets" field.';
   }
 
   const lines = ['Available presets:'];

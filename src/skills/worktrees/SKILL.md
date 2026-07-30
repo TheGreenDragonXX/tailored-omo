@@ -10,8 +10,8 @@ managing Git worktrees as isolated coding lanes. Its value is giving the Orchest
 
 ## Core Contract
 
-This is an **orchestrator-only** workflow. Other specialists such as `@fixer`
-or `@designer` can be assigned tasks inside a worktree lane, but the
+This is an **orchestrator-only** workflow. A write-capable `@fixer` can be
+assigned tasks inside a worktree lane, but the
 Orchestrator owns lane planning, branch/path selection, file ownership,
 delegation, diff validation, integration, and cleanup.
 
@@ -90,21 +90,21 @@ keeps them readable to OpenCode.
 `.gitignore`:
 
 ```gitignore
-# BEGIN oh-my-opencode-slim worktrees
+# BEGIN tailored-omo worktrees
 .slim/worktrees/
 .slim/worktrees.json
-# END oh-my-opencode-slim worktrees
+# END tailored-omo worktrees
 ```
 
 `.ignore`:
 
 ```ignore
-# BEGIN oh-my-opencode-slim worktrees
+# BEGIN tailored-omo worktrees
 !.slim/
 !.slim/worktrees.json
 !.slim/worktrees/
 !.slim/worktrees/**
-# END oh-my-opencode-slim worktrees
+# END tailored-omo worktrees
 ```
 
 ---

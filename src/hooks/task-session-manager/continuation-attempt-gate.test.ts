@@ -12,7 +12,7 @@ type LegacyStore = {
   attempts: Map<string, LegacyAttemptState>;
 };
 
-const STORE_KEY = Symbol.for('oh-my-opencode-slim.continuation-attempt-gate');
+const STORE_KEY = Symbol.for('tailored-omo.continuation-attempt-gate');
 
 function getLegacyStore(): LegacyStore {
   return (
