@@ -8,15 +8,15 @@
     "balanced": {
       "orchestrator": {
         "model": [
-          { "id": "opencode-go/minimax-m3", "variant": "thinking" },
+          { "id": "opencode-go/deepseek-v4-flash", "variant": "high" },
           { "id": "opencode-go/deepseek-v4-pro", "variant": "high" },
           { "id": "opencode-go/qwen3.7-plus", "variant": "high" }
         ]
       },
       "fixer": {
         "model": [
+          "ollama/swarm-fast-qwen36-35b:latest",
           "ollama/swarm-smart-qwen36-27b-iq4xs:latest",
-          "ollama/swarm-worker-gpt-oss-20b-2x32k:latest",
           { "id": "opencode-go/deepseek-v4-flash", "variant": "high" }
         ]
       }
@@ -24,7 +24,7 @@
     "parallel-small": {
       "orchestrator": {
         "model": [
-          { "id": "opencode-go/minimax-m3", "variant": "thinking" },
+          { "id": "opencode-go/deepseek-v4-flash", "variant": "high" },
           { "id": "opencode-go/deepseek-v4-pro", "variant": "high" },
           { "id": "opencode-go/qwen3.7-plus", "variant": "high" }
         ]
@@ -40,7 +40,7 @@
     "fast-local": {
       "orchestrator": {
         "model": [
-          { "id": "opencode-go/minimax-m3", "variant": "thinking" },
+          { "id": "opencode-go/deepseek-v4-flash", "variant": "high" },
           { "id": "opencode-go/deepseek-v4-pro", "variant": "high" }
         ]
       },
@@ -55,7 +55,7 @@
     "quality-local": {
       "orchestrator": {
         "model": [
-          { "id": "opencode-go/minimax-m3", "variant": "thinking" },
+          { "id": "opencode-go/deepseek-v4-flash", "variant": "high" },
           { "id": "opencode-go/deepseek-v4-pro", "variant": "high" }
         ]
       },
@@ -70,7 +70,7 @@
     "hq-manual": {
       "orchestrator": {
         "model": [
-          { "id": "opencode-go/minimax-m3", "variant": "thinking" },
+          { "id": "opencode-go/deepseek-v4-flash", "variant": "high" },
           { "id": "opencode-go/deepseek-v4-pro", "variant": "high" }
         ]
       },
@@ -91,7 +91,7 @@
     "explorer": {
       "model": [
         { "id": "opencode-go/deepseek-v4-flash", "variant": "high" },
-        "ollama/swarm-worker-gpt-oss-20b-2x32k:latest"
+        "ollama/swarm-fast-qwen36-35b:latest"
       ],
       "skills": [],
       "mcps": []

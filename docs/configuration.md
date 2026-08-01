@@ -7,15 +7,21 @@ The production setup uses these presets:
 
 | Preset | Orchestrator | Fixer | Purpose |
 |---|---|---|---|
-| `balanced` | `opencode-go/minimax-m3` | Qwen 27B IQ4_XS | Default balance |
-| `parallel-small` | `opencode-go/minimax-m3` | GPT-OSS 20B 2x32k | Two fast local workers |
-| `fast-local` | `opencode-go/minimax-m3` | Qwen 35B | Faster single local worker |
-| `quality-local` | `opencode-go/minimax-m3` | Qwen 27B IQ4_XS | Higher coding quality |
-| `hq-manual` | `opencode-go/minimax-m3` | Qwen 27B Q4_K_XL | Manual high-quality lane |
+| `balanced` | `opencode-go/deepseek-v4-flash` | Qwen 35B, then Qwen 27B IQ4_XS | Fast concrete work with quality fallback |
+| `parallel-small` | `opencode-go/deepseek-v4-flash` | GPT-OSS 20B 2x32k | Two fast local workers |
+| `fast-local` | `opencode-go/deepseek-v4-flash` | Qwen 35B | Faster single local worker |
+| `quality-local` | `opencode-go/deepseek-v4-flash` | Qwen 27B IQ4_XS | Higher coding quality |
+| `hq-manual` | `opencode-go/deepseek-v4-flash` | Qwen 27B Q4_K_XL | Manual high-quality lane |
 
-Specialists stay constant across presets: Explorer and Librarian use
+Specialists stay constant across presets. Explorer uses DeepSeek V4 Flash so
+implementation decisions are based on the strongest available repository
+evidence, with local Qwen3.6 35B as outage fallback. Librarian uses
 `opencode-go/deepseek-v4-flash`; Observer uses `opencode-go/mimo-v2.5`; Oracle
 uses `opencode-go/qwen3.7-max` and is invoked manually.
+
+In Fixer chains, DeepSeek V4 Flash is the final hosted fallback. It is selected
+only after the preceding local models fail, time out, or return an empty result;
+this is separate from Flash's normal role as the primary Orchestrator.
 
 Important non-model settings:
 
