@@ -12,9 +12,12 @@ Parallel read-only work is safe. Parallel writing is limited to two Fixers and
 only when the Orchestrator assigns explicitly disjoint paths. Sessions are reused
 through the upstream session manager without an extra reuse policy.
 
-For the first real project, create a dedicated Obsidian/WikiLLM vault and only
-retrieve small relevant pages into model context. The vault can be large on disk;
-the retrieved context must stay bounded, especially for local models.
+For a real project, keep durable knowledge in a dedicated Obsidian vault and
+export only reviewed, task-relevant pages into a project-local context folder.
+Do not auto-load a whole vault. WikiLLM is optional and requires an explicit
+choice between its hybrid-cloud service and a separately audited local tool;
+it is not a Tailored OMO dependency. The workspace-level
+`FIRST-PROJECT-RUNBOOK.md` defines the complete operating procedure.
 
 This extra agent-selection step is intentional. Current OpenCode hard-codes
 `plan_exit` to its built-in `build` agent. Tailored OMO does not override that
