@@ -1,5 +1,10 @@
 # Operating workflow
 
+On this workstation, launch **OpenCode (Tailored OMO)** from the Windows Start
+menu. It opens OpenCode Desktop connected to the native Ubuntu WSL runtime on
+`http://localhost:4096`; no terminal UI is required. The workspace-level
+`FIRST-PROJECT-RUNBOOK.md` contains the one-time connection procedure.
+
 1. Select the intended cloud model and enter OpenCode's native Plan agent.
 2. Discuss the project and save the final plan.
 3. When Plan offers to switch to the generic Build agent, decline; manually
